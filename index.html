@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>站子工作台</title>
+<script>
+  // 故障报警器
+  window.addEventListener('error', function(e) {
+    if(e.message && e.message.includes('supabase')) {
+      alert('加载 Supabase 库失败！请检查你的网络，或者尝试切换一下手机网络再刷新。');
+    }
+  }, true);
+</script>
+<!-- 引入 Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box}
@@ -18,221 +27,78 @@ body{
     radial-gradient(820px 520px at 92% -4%, rgba(168,85,247,.13), transparent 62%);
   background-attachment:fixed;
 }
-.btn{border:none;border-radius:10px;padding:9px 15px;font-size:13.5px;font-weight:600;cursor:pointer;
-  font-family:inherit;transition:.16s;display:inline-flex;align-items:center;gap:6px;justify-content:center}
-.btn.primary{background:linear-gradient(135deg,#ff5c8a,#a855f7);color:#fff;box-shadow:0 6px 18px rgba(255,92,138,.26)}
-.btn.primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn{border:none;border-radius:10px;padding:9px 15px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:.16s;display:inline-flex;align-items:center;gap:6px;justify-content:center}
+.btn.primary{background:linear-gradient(135deg,#ff5c8a,#a855f7);color:#fff}
 .btn.ghost{background:#1a1d27;color:#c0c4d4;border:1px solid #272b38}
-.btn.ghost:hover{background:#232734;color:#fff}
 .btn.danger{background:rgba(255,92,138,.14);color:#ff7ba3;border:1px solid rgba(255,92,138,.35)}
-.btn.danger:hover{background:rgba(255,92,138,.24)}
-.btn:disabled{opacity:.55;cursor:not-allowed;transform:none!important}
-.icon-btn{background:transparent;border:none;color:#8b90a6;font-size:16px;cursor:pointer;
-  width:30px;height:30px;border-radius:8px;transition:.15s}
-.icon-btn:hover{background:#232734;color:#fff}
-.muted{color:#7d8299;font-size:13px;line-height:1.7;margin:0 0 14px}
-.brand{display:flex;align-items:center;gap:11px;min-width:0}
-.logo{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:18px;flex-shrink:0;
-  background:linear-gradient(135deg,#ff5c8a,#a855f7);box-shadow:0 6px 18px rgba(255,92,138,.32)}
-.brand-name{font-size:15px;font-weight:700;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.brand-sub{margin-top:1px;font-size:11.5px;color:#7d8299;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.front-header{
-  position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:22px;
-  padding:13px 28px;background:rgba(10,11,16,.82);backdrop-filter:blur(14px);
-  border-bottom:1px solid #1c1f29;flex-wrap:wrap;
-}
+.icon-btn{background:transparent;border:none;color:#8b90a6;font-size:16px;cursor:pointer;width:30px;height:30px;border-radius:8px}
+.brand{display:flex;align-items:center;gap:11px}
+.logo{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:18px;background:linear-gradient(135deg,#ff5c8a,#a855f7)}
+.brand-name{font-size:15px;font-weight:700}
+.brand-sub{margin-top:1px;font-size:11.5px;color:#7d8299}
+.front-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:22px;padding:13px 28px;background:rgba(10,11,16,.82);backdrop-filter:blur(14px);border-bottom:1px solid #1c1f29;flex-wrap:wrap}
 .front-nav{display:flex;gap:6px;margin-left:auto}
-.front-nav a{color:#9aa0b5;text-decoration:none;font-size:13.5px;font-weight:600;
-  padding:8px 14px;border-radius:9px;transition:.18s}
-.front-nav a:hover{color:#fff;background:#1a1d27}
+.front-nav a{color:#9aa0b5;text-decoration:none;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:9px}
 .front-main{max-width:980px;margin:0 auto;padding:30px 24px 70px}
-.hero{
-  position:relative;text-align:center;padding:62px 24px 50px;border-radius:26px;overflow:hidden;
-  border:1px solid #1f232e;margin-bottom:44px;
-  background:
-    radial-gradient(620px 320px at 50% 0%, rgba(255,92,138,.20), transparent 70%),
-    radial-gradient(500px 300px at 80% 100%, rgba(168,85,247,.14), transparent 70%),
-    linear-gradient(180deg,#12141c,#0d0f16);
-}
-.hero::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background-image:radial-gradient(rgba(255,255,255,.05) 1px, transparent 1px);
-  background-size:26px 26px;mask-image:radial-gradient(circle at 50% 30%, #000, transparent 78%);
-}
-.hero-badge{position:relative;display:inline-block;font-size:11px;letter-spacing:3px;font-weight:700;
-  color:#ff9ab5;background:rgba(255,92,138,.12);border:1px solid rgba(255,92,138,.3);
-  padding:5px 14px;border-radius:20px}
-.hero h1{
-  position:relative;font-size:clamp(27px,5vw,44px);margin:16px 0 12px;letter-spacing:1px;line-height:1.25;
-  background:linear-gradient(120deg,#ffffff 25%,#ffb3c9 55%,#c9a3ff 90%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.hero p{position:relative;margin:0;color:#9aa0b5;font-size:14px;line-height:1.7}
-.hero-stats{position:relative;display:flex;justify-content:center;gap:46px;margin-top:36px;flex-wrap:wrap}
-.hero-stats .item{text-align:center;min-width:70px}
-.hero-stats b{display:block;font-size:25px;font-weight:800;font-variant-numeric:tabular-nums;
-  background:linear-gradient(135deg,#ff5c8a,#a855f7);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero{position:relative;text-align:center;padding:62px 24px 50px;border-radius:26px;border:1px solid #1f232e;margin-bottom:44px;background:linear-gradient(180deg,#12141c,#0d0f16)}
+.hero h1{font-size:clamp(27px,5vw,44px);margin:16px 0 12px;background:linear-gradient(120deg,#ffffff 25%,#ffb3c9 55%,#c9a3ff 90%);-webkit-background-clip:text;color:transparent}
+.hero-stats{display:flex;justify-content:center;gap:46px;margin-top:36px;flex-wrap:wrap}
+.hero-stats b{display:block;font-size:25px;font-weight:800;background:linear-gradient(135deg,#ff5c8a,#a855f7);-webkit-background-clip:text;color:transparent}
 .hero-stats span{display:block;margin-top:5px;font-size:12px;color:#7d8299}
-.front-section{margin-bottom:56px;scroll-margin-top:80px}
-.section-head{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.front-section{margin-bottom:56px}
 .section-head h2{font-size:19px;margin:0;letter-spacing:.5px}
-.section-head h2::before{content:'';display:inline-block;width:5px;height:16px;border-radius:3px;
-  margin-right:10px;vertical-align:-2px;background:linear-gradient(135deg,#ff5c8a,#a855f7)}
 .section-sub{font-size:12.5px;color:#7d8299}
-.front-footer{text-align:center;padding:30px 20px 46px;color:#5a5f74;font-size:12.5px;border-top:1px solid #161a23}
-.front-footer p{margin:0}
 .toolbar{display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
-.search{flex:1;min-width:180px;background:#141620;border:1px solid #232734;border-radius:11px;
-  padding:11px 14px;color:#e9eaf2;font-size:13.5px;font-family:inherit;outline:none;transition:.16s}
-.search:focus{border-color:rgba(255,92,138,.45);box-shadow:0 0 0 3px rgba(255,92,138,.1)}
-.select{background:#141620;border:1px solid #232734;border-radius:11px;padding:11px 13px;
-  color:#e9eaf2;font-size:13.5px;font-family:inherit;outline:none;cursor:pointer}
-.mini-stats{display:flex;gap:14px;font-size:12.5px;color:#7d8299}
-.mini-stats b{color:#ff8fb0;font-weight:700}
-.month-head{display:flex;align-items:center;gap:10px;margin:26px 0 13px;font-size:14px;font-weight:700;color:#c8cbda}
-.month-head:first-child{margin-top:4px}
-.month-head .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#ff5c8a,#a855f7);
-  box-shadow:0 0 10px rgba(255,92,138,.7)}
-.month-head .count{font-size:11.5px;font-weight:500;color:#8b90a6;background:#1a1d27;padding:3px 9px;border-radius:20px}
-.ev-card{display:flex;gap:16px;background:#13151d;border:1px solid #1f232e;border-radius:16px;
-  padding:16px;margin-bottom:12px;transition:.2s}
-.ev-card:hover{border-color:#2e3343;background:#161924}
+.search{flex:1;min-width:180px;background:#141620;border:1px solid #232734;border-radius:11px;padding:11px 14px;color:#e9eaf2;font-size:13.5px;outline:none}
+.select{background:#141620;border:1px solid #232734;border-radius:11px;padding:11px 13px;color:#e9eaf2;font-size:13.5px}
+.ev-card{display:flex;gap:16px;background:#13151d;border:1px solid #1f232e;border-radius:16px;padding:16px;margin-bottom:12px}
 .ev-side{flex:0 0 62px;text-align:center;border-right:1px solid #1f232e;padding-right:14px}
-.ev-day{font-size:24px;font-weight:800;line-height:1.1;
-  background:linear-gradient(135deg,#ff5c8a,#a855f7);-webkit-background-clip:text;background-clip:text;color:transparent}
-.ev-mon{font-size:11.5px;color:#8b90a6;margin-top:3px}
-.ev-week{font-size:11px;color:#5a5f74;margin-top:2px}
-.ev-main{flex:1;min-width:0}
-.ev-head{display:flex;align-items:flex-start;gap:9px;flex-wrap:wrap}
-.ev-head h3{font-size:15px;margin:0;font-weight:700;line-height:1.5;word-break:break-word}
-.ev-actions{margin-left:auto;display:flex;gap:2px;opacity:0;transition:.18s}
-.ev-card:hover .ev-actions{opacity:1}
-.ev-actions button{background:transparent;border:none;color:#7d8299;font-size:12.5px;cursor:pointer;
-  padding:4px 9px;border-radius:7px;font-family:inherit;transition:.15s}
-.ev-actions button:hover{background:#232734;color:#fff}
-.ev-actions button[data-act="del"]:hover{color:#ff6b81;background:rgba(255,107,129,.12)}
-.pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap;
-  background:rgba(168,85,247,.16);color:#c9a3ff;border:1px solid rgba(168,85,247,.28)}
-.ev-desc{font-size:13.5px;color:#a2a7ba;line-height:1.75;margin:8px 0 0;white-space:pre-wrap;word-break:break-word}
-.ev-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
-.ev-tags span{font-size:11.5px;color:#8b90a6;background:#1a1d27;padding:3px 9px;border-radius:8px}
+.ev-day{font-size:24px;font-weight:800;background:linear-gradient(135deg,#ff5c8a,#a855f7);-webkit-background-clip:text;color:transparent}
+.ev-main{flex:1}
+.ev-head h3{font-size:15px;margin:0;font-weight:700}
+.ev-desc{font-size:13.5px;color:#a2a7ba;line-height:1.75;margin:8px 0 0}
+.ev-tags span{font-size:11.5px;color:#8b90a6;background:#1a1d27;padding:3px 9px;border-radius:8px;margin-right:5px}
 .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px;margin-top:12px}
-.media-item{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#0e1017;
-  border:1px solid #1f232e;cursor:zoom-in;display:flex;align-items:center;justify-content:center}
-.media-item img,.media-item video{width:100%;height:100%;object-fit:cover;display:block}
-.media-loading{font-size:11px;color:#41465a}
-.media-badge{position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.72);color:#fff;
-  font-size:10.5px;padding:2px 7px;border-radius:20px;pointer-events:none}
+.media-item{aspect-ratio:1;border-radius:10px;overflow:hidden;background:#0e1017;cursor:zoom-in}
+.media-item img,.media-item video{width:100%;height:100%;object-fit:cover}
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
-.stat-card{background:linear-gradient(160deg,#161924,#12141c);border:1px solid #222633;
-  border-radius:15px;padding:15px 18px}
+.stat-card{background:#161924;border:1px solid #222633;border-radius:15px;padding:15px 18px}
 .stat-card .label{font-size:12.5px;color:#8b90a6}
-.stat-card .value{font-size:23px;font-weight:800;margin-top:6px;font-variant-numeric:tabular-nums}
-.stat-card .value.grad{background:linear-gradient(135deg,#ff5c8a,#a855f7);
-  -webkit-background-clip:text;background-clip:text;color:transparent}
+.stat-card .value{font-size:23px;font-weight:800;margin-top:6px}
 .cat-chart{background:#13151d;border:1px solid #1f232e;border-radius:15px;padding:16px 18px;margin-bottom:18px}
-.cat-chart h4{margin:0 0 14px;font-size:13px;color:#8b90a6;font-weight:600}
-.cat-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:12.5px}
-.cat-row:last-child{margin-bottom:0}
-.cat-name{width:78px;color:#c0c4d4;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cat-bar{flex:1;height:8px;background:#1b1f2c;border-radius:20px;overflow:hidden}
-.cat-bar i{display:block;height:100%;border-radius:20px;transition:width .5s ease}
-.cat-val{width:92px;text-align:right;color:#8b90a6;font-variant-numeric:tabular-nums}
-.ex-item{display:flex;align-items:center;gap:14px;background:#13151d;border:1px solid #1f232e;
-  border-radius:13px;padding:13px 16px;margin-bottom:9px;transition:.18s}
-.ex-item:hover{border-color:#2e3343;background:#161924}
-.ex-date{font-size:11.5px;color:#7d8299;background:#1a1d27;padding:5px 9px;border-radius:8px;
-  font-variant-numeric:tabular-nums;flex-shrink:0}
-.ex-main{flex:1;min-width:0}
-.ex-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.ex-note{font-size:12.5px;color:#7d8299;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ex-amount{font-size:15.5px;font-weight:700;color:#ff7ba3;font-variant-numeric:tabular-nums;flex-shrink:0}
-.ex-actions{display:flex;gap:2px;opacity:0;transition:.18s}
-.ex-item:hover .ex-actions{opacity:1}
-.ex-actions button{background:transparent;border:none;color:#7d8299;font-size:12.5px;
-  cursor:pointer;padding:4px 8px;border-radius:7px;font-family:inherit}
-.ex-actions button:hover{background:#232734;color:#fff}
-.ex-actions button[data-act="del"]:hover{color:#ff6b81;background:rgba(255,107,129,.12)}
-.ex-thumb{width:40px;height:40px;border-radius:8px;overflow:hidden;background:#0e1017;
-  border:1px solid #242836;cursor:zoom-in;display:inline-block;margin:8px 6px 0 0;vertical-align:top}
-.ex-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.empty{text-align:center;padding:58px 20px;color:#5a5f74}
-.empty .big{font-size:40px;margin-bottom:14px;opacity:.75}
-.empty p{margin:0;font-size:13.5px}
-.admin-header{
-  position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:18px;
-  padding:12px 24px;background:rgba(10,11,16,.86);backdrop-filter:blur(14px);
-  border-bottom:1px solid #1c1f29;flex-wrap:wrap;
-}
-.tabs{display:flex;gap:4px;background:#141620;padding:4px;border-radius:12px;border:1px solid #232734}
-.tab{background:transparent;border:none;color:#8b90a6;padding:8px 15px;border-radius:9px;
-  font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:.18s;white-space:nowrap}
-.tab:hover{color:#d5d8e6}
-.tab.active{background:linear-gradient(135deg,rgba(255,92,138,.22),rgba(168,85,247,.22));
-  color:#fff;box-shadow:inset 0 0 0 1px rgba(255,92,138,.35)}
-.top-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.ex-item{display:flex;align-items:center;gap:14px;background:#13151d;border:1px solid #1f232e;border-radius:13px;padding:13px 16px;margin-bottom:9px}
+.ex-date{font-size:11.5px;color:#7d8299;background:#1a1d27;padding:5px 9px;border-radius:8px}
+.ex-main{flex:1}
+.ex-title{font-size:14px;font-weight:600}
+.ex-note{font-size:12.5px;color:#7d8299;margin-top:3px}
+.ex-amount{font-size:15.5px;font-weight:700;color:#ff7ba3}
+.admin-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:18px;padding:12px 24px;background:rgba(10,11,16,.86);border-bottom:1px solid #1c1f29}
+.tabs{display:flex;gap:4px;background:#141620;padding:4px;border-radius:12px}
+.tab{background:transparent;border:none;color:#8b90a6;padding:8px 15px;border-radius:9px;font-size:13.5px;font-weight:600}
+.tab.active{background:rgba(255,92,138,.2);color:#fff}
 .admin-main{max-width:1080px;margin:0 auto;padding:26px 24px 90px}
 .a-panel{display:none}
-.a-panel.active{display:block;animation:fade .24s ease}
-@keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
-.settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px}
-.settings-card{background:#13151d;border:1px solid #1f232e;border-radius:16px;padding:20px;
-  display:flex;flex-direction:column;gap:14px}
-.settings-card h3{margin:0;font-size:14.5px;color:#e9eaf2}
-.settings-card.danger{border-color:rgba(255,92,138,.28);background:linear-gradient(160deg,rgba(255,92,138,.06),#13151d)}
-.btn-row{display:flex;gap:10px;flex-wrap:wrap}
-.field{display:flex;flex-direction:column;gap:7px;flex:1;min-width:0}
-.field>span{font-size:12.5px;color:#8b90a6;font-weight:600}
-.field input,.field select,.field textarea{background:#0e1017;border:1px solid #242836;border-radius:10px;
-  padding:11px 13px;color:#e9eaf2;font-size:13.5px;font-family:inherit;outline:none;width:100%;transition:.16s}
-.field input:focus,.field select:focus,.field textarea:focus{
-  border-color:rgba(255,92,138,.5);box-shadow:0 0 0 3px rgba(255,92,138,.1)}
-.field textarea{resize:vertical;line-height:1.7}
-.row{display:flex;gap:14px}
-.modal{position:fixed;inset:0;background:rgba(5,6,10,.76);backdrop-filter:blur(6px);
-  display:none;align-items:center;justify-content:center;padding:20px;z-index:200}
+.a-panel.active{display:block}
+.modal{position:fixed;inset:0;background:rgba(5,6,10,.76);display:none;align-items:center;justify-content:center;padding:20px;z-index:200}
 .modal.open{display:flex}
-.modal-box{background:#12141c;border:1px solid #252938;border-radius:18px;width:100%;max-width:620px;
-  max-height:90vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.65);
-  animation:pop .22s ease}
-@keyframes pop{from{opacity:0;transform:scale(.96) translateY(10px)}to{opacity:1;transform:none}}
-.modal-head{display:flex;align-items:center;justify-content:space-between;
-  padding:17px 22px;border-bottom:1px solid #1f232e}
-.modal-head h2{font-size:16px;margin:0}
-.modal-body{padding:20px 22px;overflow:auto;display:flex;flex-direction:column;gap:14px}
+.modal-box{background:#12141c;border:1px solid #252938;border-radius:18px;width:100%;max-width:620px;display:flex;flex-direction:column}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:17px 22px;border-bottom:1px solid #1f232e}
+.modal-body{padding:20px 22px;display:flex;flex-direction:column;gap:14px}
 .modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:15px 22px;border-top:1px solid #1f232e}
-.hint{margin:0;font-size:12.5px;color:#ff7ba3;min-height:16px}
-.dropzone{border:1.5px dashed #2c3140;border-radius:12px;padding:20px;text-align:center;
-  color:#6b7089;font-size:13px;cursor:pointer;transition:.18s}
-.dropzone:hover,.dropzone.drag{border-color:rgba(255,92,138,.55);background:rgba(255,92,138,.05);color:#ff9ab5}
-.media-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:10px}
-.pv-item{position:relative;aspect-ratio:1;border-radius:9px;overflow:hidden;background:#0e1017;border:1px solid #242836}
-.pv-item img,.pv-item video{width:100%;height:100%;object-fit:cover;display:block}
-.pv-del{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;border:none;
-  background:rgba(0,0,0,.75);color:#fff;font-size:11px;cursor:pointer;display:flex;
-  align-items:center;justify-content:center;padding:0;line-height:1}
-.pv-del:hover{background:#ff5c8a}
-.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:300;display:none;
-  align-items:center;justify-content:center;padding:28px;cursor:zoom-out}
+.field{display:flex;flex-direction:column;gap:7px;flex:1}
+.field>span{font-size:12.5px;color:#8b90a6;font-weight:600}
+.field input,.field select,.field textarea{background:#0e1017;border:1px solid #242836;border-radius:10px;padding:11px 13px;color:#e9eaf2;font-size:13.5px;outline:none;width:100%}
+.row{display:flex;gap:14px}
+.pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:rgba(168,85,247,.16);color:#c9a3ff}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:300;display:none;align-items:center;justify-content:center;padding:28px}
 .lightbox.open{display:flex}
-.lightbox img,.lightbox video{max-width:100%;max-height:100%;border-radius:10px;
-  box-shadow:0 20px 70px rgba(0,0,0,.8)}
-@media(max-width:700px){
-  .front-header,.admin-header{padding:11px 14px;gap:10px}
-  .front-main,.admin-main{padding:18px 14px 70px}
-  .front-nav{margin-left:0;width:100%;justify-content:flex-end}
-  .tabs{order:3;width:100%}
-  .tabs .tab{flex:1}
-  .top-actions{margin-left:0;width:100%}
-  .top-actions .btn{flex:1}
-  .ev-card{padding:13px;gap:12px}
-  .ev-side{flex:0 0 46px;padding-right:10px}
-  .ev-day{font-size:20px}
-  .row{flex-direction:column;gap:14px}
-  .hero{padding:44px 18px 38px}
-  .hero-stats{gap:26px}
-  .ev-actions,.ex-actions{opacity:1}
-}
+.lightbox img,.lightbox video{max-width:100%;max-height:100%}
+.empty{text-align:center;padding:58px 20px;color:#5a5f74}
+.media-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:10px}
+.pv-item{aspect-ratio:1;border-radius:9px;overflow:hidden;background:#0e1017;position:relative}
+.pv-item img,.pv-item video{width:100%;height:100%;object-fit:cover}
+.pv-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.75);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer}
+.dropzone{border:1.5px dashed #2c3140;border-radius:12px;padding:20px;text-align:center;color:#6b7089;font-size:13px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -255,7 +121,6 @@ body{
 
   <main class="front-main">
     <section class="hero">
-      <div class="hero-badge">FAN STATION</div>
       <h1 id="f-hero-name">星光记录站</h1>
       <p id="f-hero-desc">记录每一次心动瞬间</p>
       <div class="hero-stats" id="f-hero-stats"></div>
@@ -264,7 +129,6 @@ body{
     <section id="f-timeline" class="front-section">
       <div class="section-head">
         <h2>活动时间线</h2>
-        <span class="section-sub" id="f-timeline-sub"></span>
       </div>
       <div class="toolbar">
         <input class="search" id="f-search-events" placeholder="搜索活动标题 / 内容 / 标签…">
@@ -275,17 +139,12 @@ body{
     <section id="f-expense" class="front-section">
       <div class="section-head">
         <h2>应援账本公示</h2>
-        <span class="section-sub">透明公开 · 每一分都用在你身上</span>
       </div>
       <div class="summary" id="f-expense-summary"></div>
       <div class="cat-chart" id="f-cat-chart"></div>
       <div id="f-expense-list"></div>
     </section>
   </main>
-
-  <footer class="front-footer">
-    <p>© <span id="f-year"></span> <span id="f-footer-name"></span> · 用爱发电</p>
-  </footer>
 </div>
 
 <div id="admin-app" hidden>
@@ -312,7 +171,6 @@ body{
     <section id="a-panel-timeline" class="a-panel active">
       <div class="toolbar">
         <input class="search" id="a-search-events" placeholder="搜索活动标题 / 内容 / 标签…">
-        <div class="mini-stats" id="a-timeline-stats"></div>
       </div>
       <div id="a-timeline-list"></div>
     </section>
@@ -337,7 +195,6 @@ body{
         </div>
         <div class="settings-card danger">
           <h3>退出登录</h3>
-          <p class="muted">当前处于管理员登录状态，退出后需要重新验证。</p>
           <button class="btn danger" id="btn-logout">退出登录</button>
         </div>
       </div>
@@ -352,13 +209,9 @@ body{
       <button class="icon-btn" data-close>✕</button>
     </div>
     <div class="modal-body">
-      <label class="field"><span>管理员邮箱</span>
-        <input type="email" id="login-email" placeholder="输入邮箱" autocomplete="off">
-      </label>
-      <label class="field"><span>密码</span>
-        <input type="password" id="login-pwd" placeholder="输入密码" autocomplete="off">
-      </label>
-      <p class="hint" id="login-hint"></p>
+      <label class="field"><span>管理员邮箱</span><input type="email" id="login-email" placeholder="输入邮箱"></label>
+      <label class="field"><span>密码</span><input type="password" id="login-pwd" placeholder="输入密码"></label>
+      <p id="login-hint" style="color:#ff7ba3;font-size:12px;margin:0"></p>
     </div>
     <div class="modal-foot">
       <button class="btn ghost" data-close>取消</button>
@@ -369,88 +222,47 @@ body{
 
 <div class="modal" id="modal-event">
   <div class="modal-box">
-    <div class="modal-head">
-      <h2 id="ev-modal-title">新建活动记录</h2>
-      <button class="icon-btn" data-close>✕</button>
-    </div>
+    <div class="modal-head"><h2>活动记录</h2><button class="icon-btn" data-close>✕</button></div>
     <div class="modal-body">
       <div class="row">
         <label class="field"><span>日期</span><input type="date" id="ev-date"></label>
         <label class="field"><span>活动类型</span>
-          <select id="ev-type">
-            <option>演唱会</option><option>见面会</option><option>打歌 / 舞台</option>
-            <option>生日应援</option><option>线下活动</option><option>其他</option>
-          </select>
+          <select id="ev-type"><option>演唱会</option><option>见面会</option><option>打歌 / 舞台</option><option>其他</option></select>
         </label>
       </div>
-      <label class="field"><span>标题</span>
-        <input type="text" id="ev-title" placeholder="例：240815 首尔演唱会 Day1">
-      </label>
-      <label class="field"><span>记录内容</span>
-        <textarea id="ev-desc" rows="4" placeholder="写下这次活动的记录…"></textarea>
-      </label>
-      <label class="field"><span>标签（逗号分隔）</span>
-        <input type="text" id="ev-tags" placeholder="舞台, 饭拍, 应援">
-      </label>
+      <label class="field"><span>标题</span><input type="text" id="ev-title" placeholder="例：首尔演唱会 Day1"></label>
+      <label class="field"><span>记录内容</span><textarea id="ev-desc" rows="3"></textarea></label>
+      <label class="field"><span>标签</span><input type="text" id="ev-tags" placeholder="舞台, 饭拍"></label>
       <div class="field">
         <span>图片 / 视频</span>
-        <div class="dropzone" id="ev-drop">
-          <input type="file" id="ev-files" accept="image/*,video/*" multiple hidden>
-          <div id="ev-drop-text">点击或拖拽文件到这里上传</div>
-        </div>
+        <div class="dropzone" id="ev-drop"><input type="file" id="ev-files" accept="image/*,video/*" multiple hidden><div>点击上传</div></div>
         <div class="media-preview" id="ev-preview"></div>
       </div>
     </div>
-    <div class="modal-foot">
-      <button class="btn ghost" data-close>取消</button>
-      <button class="btn primary" id="ev-save">保存</button>
-    </div>
+    <div class="modal-foot"><button class="btn ghost" data-close>取消</button><button class="btn primary" id="ev-save">保存</button></div>
   </div>
 </div>
 
 <div class="modal" id="modal-expense">
   <div class="modal-box" style="max-width:540px">
-    <div class="modal-head">
-      <h2 id="ex-modal-title">新建支出</h2>
-      <button class="icon-btn" data-close>✕</button>
-    </div>
+    <div class="modal-head"><h2>支出记录</h2><button class="icon-btn" data-close>✕</button></div>
     <div class="modal-body">
       <div class="row">
         <label class="field"><span>日期</span><input type="date" id="ex-date"></label>
-        <label class="field"><span>金额（元）</span>
-          <input type="number" id="ex-amount" min="0" step="0.01" placeholder="0.00">
-        </label>
+        <label class="field"><span>金额（元）</span><input type="number" id="ex-amount" min="0" step="0.01"></label>
       </div>
-      <label class="field"><span>支出项目</span>
-        <input type="text" id="ex-title" placeholder="例：地铁站灯箱广告投放">
+      <label class="field"><span>支出项目</span><input type="text" id="ex-title"></label>
+      <label class="field"><span>分类</span><input type="text" id="ex-cat" list="cat-options">
+        <datalist id="cat-options"><option value="应援物"></option><option value="广告投放"></option><option value="集资"></option><option value="其他"></option></datalist>
       </label>
-      <label class="field"><span>分类</span>
-        <input type="text" id="ex-cat" list="cat-options" placeholder="选择或输入分类">
-        <datalist id="cat-options">
-          <option value="应援物"></option>
-          <option value="广告投放"></option>
-          <option value="生日应援"></option>
-          <option value="集资"></option>
-          <option value="差旅"></option>
-          <option value="其他"></option>
-        </datalist>
-      </label>
-      <label class="field"><span>备注</span>
-        <textarea id="ex-note" rows="3" placeholder="付款方式、对接人、发票等…"></textarea>
-      </label>
+      <label class="field"><span>备注</span><textarea id="ex-note" rows="2"></textarea></label>
       <div class="field">
         <span>凭证截图（可选）</span>
-        <div class="dropzone" id="ex-drop">
-          <input type="file" id="ex-files" accept="image/*" multiple hidden>
-          <div>点击或拖拽上传凭证</div>
-        </div>
+        <div class="dropzone" id="ex-drop"><input type="file" id="ex-files" accept="image/*" multiple hidden><div>点击上传</div></div>
         <div class="media-preview" id="ex-preview"></div>
       </div>
     </div>
-    <div class="modal-foot">
-      <button class="btn ghost" data-close>取消</button>
-      <button class="btn primary" id="ex-save">保存</button>
-    </div>
+    <div class="modal-foot"><button class="btn ghost" data-close>取消</button><button class="btn primary" id="ex-save">保存</button></div>
   </div>
 </div>
 
@@ -458,281 +270,79 @@ body{
 
 <script>
 // ==========================================
-// ⚠️ 请在这里填入你的 Supabase 密钥！
+// 已自动填好你的密钥
 // ==========================================
 const SUPABASE_URL = 'https://jhdmotgxxetvdjslgiek.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_9XIghyqF1T6N0SwR75Ml7w_UKnRXEPm';
 // ==========================================
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+if(!window.supabase) {
+  alert('加载失败：请检查你的网络，或者更新浏览器。');
+}
+
+let supabaseClient;
+try {
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} catch (e) {
+  alert('初始化失败！请检查密钥是否填对。\n错误信息: ' + e.message);
+}
 
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-const el = (tag, cls, html) => {
-  const e = document.createElement(tag);
-  if (cls) e.className = cls;
-  if (html != null) e.innerHTML = html;
-  return e;
-};
-const uid = () => (crypto.randomUUID ? crypto.randomUUID()
-  : Date.now().toString(36) + Math.random().toString(36).slice(2));
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
-  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const money = n => '¥' + Number(n || 0).toLocaleString('zh-CN',
-  { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const shortMoney = n => {
-  n = Number(n || 0);
-  if (n >= 10000) return '¥' + (n / 10000).toFixed(1) + '万';
-  return '¥' + n.toLocaleString('zh-CN', { maximumFractionDigits: 0 });
-};
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const money = n => '¥' + Number(n || 0).toLocaleString('zh-CN', { minimumFractionDigits: 2 });
+const shortMoney = n => '¥' + (n >= 10000 ? (n / 10000).toFixed(1) + '万' : Number(n||0).toLocaleString());
 const WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-const todayStr = () => {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-};
-const parseDate = s => {
-  const [y, m, d] = String(s || '').split('-').map(Number);
-  return new Date(y || 1970, (m || 1) - 1, d || 1);
-};
+const todayStr = () => new Date().toISOString().split('T')[0];
+const parseDate = s => { const [y, m, d] = String(s || '').split('-').map(Number); return new Date(y || 1970, (m || 1) - 1, d || 1); };
 
-const SETTINGS_KEY = 'fanstation:settings';
-const DEFAULT_SETTINGS = { siteName: '星光记录站', siteDesc: '记录每一次心动瞬间' };
-let settings = loadSettings();
-
-function loadSettings() {
-  try {
-    const raw = localStorage.getItem(SETTINGS_KEY);
-    if (raw) return Object.assign({}, DEFAULT_SETTINGS, JSON.parse(raw));
-  } catch (e) {}
-  return Object.assign({}, DEFAULT_SETTINGS);
-}
-function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
-
-let events = [];
-let expenses = [];
-let isAdmin = false;
-let currentAdminTab = 'timeline';
-let fQuery = '', aQuery = '', aCatQuery = 'all';
-
-const mediaObserver = new IntersectionObserver(entries => {
-  for (const en of entries) {
-    if (!en.isIntersecting) continue;
-    const box = en.target;
-    mediaObserver.unobserve(box);
-    const m = box._media;
-    box.innerHTML = '';
-    if (!m || !m.url) { box.innerHTML = '<span class="media-loading">已失效</span>'; continue; }
-    if (m.type === 'video') {
-      const v = document.createElement('video');
-      v.src = m.url; v.muted = true; v.playsInline = true; v.preload = 'metadata';
-      box.appendChild(v);
-      box.appendChild(el('span', 'media-badge', '视频'));
-    } else {
-      const img = document.createElement('img');
-      img.src = m.url; img.alt = ''; img.loading = 'lazy';
-      box.appendChild(img);
-    }
-  }
-}, { rootMargin: '320px' });
-
-function buildMediaEl(m) {
-  const d = el('div', 'media-item');
-  d._media = m;
-  d.innerHTML = '<span class="media-loading">…</span>';
-  mediaObserver.observe(d);
-  d.addEventListener('click', () => showLightbox(m.url, m.type));
-  return d;
-}
+let settings = JSON.parse(localStorage.getItem('fanstation:settings') || '{"siteName":"星光记录站","siteDesc":"记录每一次心动瞬间"}');
+let events = [], expenses = [];
+let isAdmin = false, currentAdminTab = 'timeline';
 
 function showLightbox(url, type) {
-  const lb = $('#lightbox');
-  lb.innerHTML = '';
-  if (type === 'video') {
-    const v = document.createElement('video');
-    v.src = url; v.controls = true; v.autoplay = true; v.playsInline = true;
-    lb.appendChild(v);
-  } else {
-    const img = document.createElement('img');
-    img.src = url;
-    lb.appendChild(img);
-  }
-  lb.classList.add('open');
+  const lb = $('#lightbox'); lb.innerHTML = '';
+  const m = document.createElement(type === 'video' ? 'video' : 'img');
+  m.src = url; if(type === 'video') { m.controls = true; m.autoplay = true; }
+  lb.appendChild(m); lb.classList.add('open');
 }
-$('#lightbox').addEventListener('click', () => {
-  const lb = $('#lightbox');
-  lb.classList.remove('open');
-  lb.innerHTML = '';
-});
-
-const CAT_PALETTE = ['#ff5c8a', '#a855f7', '#38bdf8', '#34d399', '#fbbf24', '#f472b6', '#818cf8', '#fb923c'];
-const catColorMap = new Map();
-function catColor(name) {
-  if (!catColorMap.has(name)) catColorMap.set(name, CAT_PALETTE[catColorMap.size % CAT_PALETTE.length]);
-  return catColorMap.get(name);
-}
-
-function computeStats(list) {
-  const total = list.reduce((s, e) => s + Number(e.amount || 0), 0);
-  const now = new Date();
-  const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-  const monthTotal = list.filter(e => (e.date || '').startsWith(ym))
-                        .reduce((s, e) => s + Number(e.amount || 0), 0);
-  const byCat = new Map();
-  list.forEach(e => {
-    const c = (e.category || '未分类').trim() || '未分类';
-    byCat.set(c, (byCat.get(c) || 0) + Number(e.amount || 0));
-  });
-  return {
-    total, monthTotal,
-    count: list.length,
-    avg: list.length ? total / list.length : 0,
-    month: now.getMonth() + 1,
-    cats: [...byCat.entries()].sort((a, b) => b[1] - a[1])
-  };
-}
-
-function summaryHTML(st) {
-  return `
-    <div class="stat-card">
-      <div class="label">总支出</div>
-      <div class="value grad">${money(st.total)}</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">本月支出（${st.month} 月）</div>
-      <div class="value">${money(st.monthTotal)}</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">支出笔数</div>
-      <div class="value">${st.count} <span style="font-size:13px;color:#7d8299;font-weight:500">笔</span></div>
-    </div>
-    <div class="stat-card">
-      <div class="label">平均单笔</div>
-      <div class="value" style="font-size:19px">${money(st.avg)}</div>
-    </div>`;
-}
-
-function catChartHTML(cats) {
-  if (!cats.length) return '';
-  const max = cats[0][1] || 1;
-  return '<h4>分类支出占比</h4>' + cats.map(([c, v]) => `
-    <div class="cat-row">
-      <div class="cat-name" title="${esc(c)}">${esc(c)}</div>
-      <div class="cat-bar"><i style="width:${(v / max * 100).toFixed(1)}%;background:${catColor(c)}"></i></div>
-      <div class="cat-val">${money(v)}</div>
-    </div>`).join('');
-}
+$('#lightbox').addEventListener('click', () => { $('#lightbox').classList.remove('open'); $('#lightbox').innerHTML = ''; });
 
 function buildEventCard(e, admin) {
   const dt = parseDate(e.date);
   const card = el('article', 'ev-card');
-
-  const side = el('div', 'ev-side');
-  side.innerHTML = `
-    <div class="ev-day">${String(dt.getDate()).padStart(2, '0')}</div>
-    <div class="ev-mon">${String(dt.getMonth() + 1).padStart(2, '0')} 月</div>
-    <div class="ev-week">${WEEK[dt.getDay()]}</div>`;
-
-  const main = el('div', 'ev-main');
-
-  const head = el('div', 'ev-head');
-  head.innerHTML = `<h3>${esc(e.title) || '（无标题）'}</h3>`;
-  if (e.type) head.appendChild(el('span', 'pill', esc(e.type)));
-  if (admin) {
-    const acts = el('div', 'ev-actions');
-    acts.innerHTML = `
-      <button data-act="edit" data-id="${e.id}">编辑</button>
-      <button data-act="del" data-id="${e.id}">删除</button>`;
-    head.appendChild(acts);
-  }
-  main.appendChild(head);
-
-  if (e.desc) main.appendChild(el('p', 'ev-desc', esc(e.desc)));
-
-  if (e.tags && e.tags.length) {
-    const tg = el('div', 'ev-tags');
-    e.tags.forEach(t => tg.appendChild(el('span', null, '#' + esc(t))));
-    main.appendChild(tg);
-  }
-
-  if (e.media && e.media.length) {
-    const grid = el('div', 'media-grid');
-    e.media.forEach(m => grid.appendChild(buildMediaEl(m)));
-    main.appendChild(grid);
-  }
-
-  card.appendChild(side);
-  card.appendChild(main);
+  card.innerHTML = `
+    <div class="ev-side">
+      <div class="ev-day">${String(dt.getDate()).padStart(2, '0')}</div>
+      <div class="ev-mon">${String(dt.getMonth() + 1).padStart(2, '0')} 月</div>
+      <div class="ev-week">${WEEK[dt.getDay()]}</div>
+    </div>
+    <div class="ev-main">
+      <div class="ev-head">
+        <h3>${esc(e.title) || '（无标题）'}</h3>
+        ${e.type ? `<span class="pill">${esc(e.type)}</span>` : ''}
+        ${admin ? `<div style="margin-left:auto"><button class="icon-btn" onclick="openEventModal('${e.id}')">✏️</button><button class="icon-btn" onclick="delEvent('${e.id}')">🗑️</button></div>` : ''}
+      </div>
+      ${e.desc ? `<p class="ev-desc">${esc(e.desc)}</p>` : ''}
+      ${e.tags && e.tags.length ? `<div class="ev-tags">${e.tags.map(t => `<span>#${esc(t)}</span>`).join('')}</div>` : ''}
+      ${e.media && e.media.length ? `<div class="media-grid">${e.media.map(m => `<div class="media-item" onclick="showLightbox('${m.url}', '${m.type}')"><img src="${m.url}" loading="lazy"></div>`).join('')}</div>` : ''}
+    </div>`;
   return card;
 }
 
 function buildExpenseItem(e, admin) {
   const dt = parseDate(e.date);
-  const cat = (e.category || '未分类').trim() || '未分类';
-  const color = catColor(cat);
   const item = el('div', 'ex-item');
-
-  const main = el('div', 'ex-main');
-  const title = el('div', 'ex-title');
-  title.innerHTML = `${esc(e.title) || '（未命名）'}
-    <span class="pill" style="background:${color}22;color:${color};border-color:${color}44">${esc(cat)}</span>`;
-  main.appendChild(title);
-  if (e.note) main.appendChild(el('div', 'ex-note', esc(e.note)));
-
-  if (admin && e.receipts && e.receipts.length) {
-    const box = el('div');
-    e.receipts.forEach(m => {
-      const t = el('div', 'ex-thumb');
-      t.innerHTML = `<img src="${m.url}" loading="lazy">`;
-      t.addEventListener('click', () => showLightbox(m.url, 'image'));
-      box.appendChild(t);
-    });
-    main.appendChild(box);
-  }
-
-  const dateEl = el('div', 'ex-date',
-    `${String(dt.getMonth() + 1).padStart(2, '0')}/${String(dt.getDate()).padStart(2, '0')}`);
-  const amountEl = el('div', 'ex-amount', money(e.amount));
-
-  item.appendChild(dateEl);
-  item.appendChild(main);
-  item.appendChild(amountEl);
-
-  if (admin) {
-    const acts = el('div', 'ex-actions');
-    acts.innerHTML = `
-      <button data-act="edit" data-id="${e.id}">编辑</button>
-      <button data-act="del" data-id="${e.id}">删除</button>`;
-    item.appendChild(acts);
-  }
+  item.innerHTML = `
+    <div class="ex-date">${String(dt.getMonth() + 1).padStart(2, '0')}/${String(dt.getDate()).padStart(2, '0')}</div>
+    <div class="ex-main">
+      <div class="ex-title">${esc(e.title)} <span class="pill">${esc(e.category || '未分类')}</span></div>
+      ${e.note ? `<div class="ex-note">${esc(e.note)}</div>` : ''}
+    </div>
+    <div class="ex-amount">${money(e.amount)}</div>
+    ${admin ? `<div><button class="icon-btn" onclick="openExpenseModal('${e.id}')">✏️</button><button class="icon-btn" onclick="delExpense('${e.id}')">🗑️</button></div>` : ''}`;
   return item;
-}
-
-function groupByMonth(arr) {
-  const map = new Map();
-  arr.forEach(e => {
-    const k = (e.date || '').slice(0, 7);
-    if (!map.has(k)) map.set(k, []);
-    map.get(k).push(e);
-  });
-  return [...map.entries()].sort((a, b) => b[0].localeCompare(a[0]));
-}
-
-function sortEvents(arr) {
-  return arr.slice().sort((a, b) =>
-    (b.date || '').localeCompare(a.date || '') || (b.created_at || '').localeCompare(a.created_at || ''));
-}
-function matchEvent(e, q) {
-  if (!q) return true;
-  return (e.title || '').toLowerCase().includes(q) ||
-         (e.desc || '').toLowerCase().includes(q) ||
-         (e.type || '').toLowerCase().includes(q) ||
-         (e.tags || []).some(t => t.toLowerCase().includes(q));
-}
-function matchExpense(e, q) {
-  if (!q) return true;
-  return (e.title || '').toLowerCase().includes(q) ||
-         (e.note || '').toLowerCase().includes(q) ||
-         (e.category || '').toLowerCase().includes(q);
 }
 
 function renderFront() {
@@ -740,568 +350,134 @@ function renderFront() {
   $('#f-site-desc').textContent = settings.siteDesc;
   $('#f-hero-name').textContent = settings.siteName;
   $('#f-hero-desc').textContent = settings.siteDesc;
-  $('#f-footer-name').textContent = settings.siteName;
-  $('#f-year').textContent = new Date().getFullYear();
-  document.title = settings.siteName + ' · 站子主页';
 
-  const mediaCount = events.reduce((s, e) => s + (e.media ? e.media.length : 0), 0);
-  const st = computeStats(expenses);
-  $('#f-hero-stats').innerHTML = `
-    <div class="item"><b>${events.length}</b><span>活动记录</span></div>
-    <div class="item"><b>${mediaCount}</b><span>影像素材</span></div>
-    <div class="item"><b>${shortMoney(st.total)}</b><span>应援总额</span></div>
-    <div class="item"><b>${st.count}</b><span>支出笔数</span></div>`;
+  const st = { total: expenses.reduce((s, e) => s + Number(e.amount||0), 0), count: expenses.length };
+  $('#f-hero-stats').innerHTML = `<div class="item"><b>${events.length}</b><span>活动记录</span></div><div class="item"><b>${st.count}</b><span>支出笔数</span></div><div class="item"><b>${shortMoney(st.total)}</b><span>应援总额</span></div>`;
 
-  renderFrontTimeline();
-  renderFrontExpense();
-}
+  const list = $('#f-timeline-list'); list.innerHTML = '';
+  if(!events.length) list.innerHTML = '<div class="empty"><div class="big">🕊️</div><p>暂无记录</p></div>';
+  else events.forEach(e => list.appendChild(buildEventCard(e, false)));
 
-function renderFrontTimeline() {
-  const list = $('#f-timeline-list');
-  const q = fQuery.trim().toLowerCase();
-  let arr = sortEvents(events.filter(e => matchEvent(e, q)));
-
-  $('#f-timeline-sub').textContent = q ? `找到 ${arr.length} 条记录` : `共 ${arr.length} 条记录`;
-
-  list.innerHTML = '';
-  if (!arr.length) {
-    list.appendChild(el('div', 'empty',
-      `<div class="big">🕊️</div><p>${q ? '没有找到匹配的记录' : '还没有活动记录，等待第一颗星星 ✨'}</p>`));
-    return;
-  }
-
-  groupByMonth(arr).forEach(([key, items]) => {
-    const [y, m] = key.split('-');
-    const head = el('div', 'month-head');
-    head.innerHTML = `<span class="dot"></span>${y} 年 ${Number(m)} 月
-      <span class="count">${items.length} 条</span>`;
-    list.appendChild(head);
-    items.forEach(e => list.appendChild(buildEventCard(e, false)));
-  });
-}
-
-function renderFrontExpense() {
-  const st = computeStats(expenses);
-  $('#f-expense-summary').innerHTML = summaryHTML(st);
-
-  const chart = $('#f-cat-chart');
-  if (st.cats.length) {
-    chart.style.display = '';
-    chart.innerHTML = catChartHTML(st.cats);
-  } else {
-    chart.style.display = 'none';
-  }
-
-  const list = $('#f-expense-list');
-  list.innerHTML = '';
-  const arr = sortEvents(expenses);
-  if (!arr.length) {
-    list.appendChild(el('div', 'empty', '<div class="big">🧾</div><p>暂无支出记录</p>'));
-    return;
-  }
-  arr.forEach(e => list.appendChild(buildExpenseItem(e, false)));
+  const exList = $('#f-expense-list'); exList.innerHTML = '';
+  $('#f-expense-summary').innerHTML = `<div class="stat-card"><div class="label">总支出</div><div class="value">${money(st.total)}</div></div>`;
+  if(!expenses.length) exList.innerHTML = '<div class="empty"><div class="big">🧾</div><p>暂无支出</p></div>';
+  else expenses.forEach(e => exList.appendChild(buildExpenseItem(e, false)));
 }
 
 function renderAdmin() {
   $('#a-site-name').textContent = settings.siteName;
-  document.title = '后台 · ' + settings.siteName;
-  renderAdminTimeline();
-  renderAdminExpense();
-  renderSettingsForm();
-  updateAddBtn();
+  const list = $('#a-timeline-list'); list.innerHTML = '';
+  if(!events.length) list.innerHTML = '<div class="empty">暂无记录</div>';
+  else events.forEach(e => list.appendChild(buildEventCard(e, true)));
+
+  const exList = $('#a-expense-list'); exList.innerHTML = '';
+  if(!expenses.length) exList.innerHTML = '<div class="empty">暂无支出</div>';
+  else expenses.forEach(e => exList.appendChild(buildExpenseItem(e, true)));
 }
 
-function renderAdminTimeline() {
-  const list = $('#a-timeline-list');
-  const q = aQuery.trim().toLowerCase();
-  const arr = sortEvents(events.filter(e => matchEvent(e, q)));
+function showFront() { $('#front-app').hidden = false; $('#admin-app').hidden = true; renderFront(); }
+function showAdmin() { if (!isAdmin) return; $('#front-app').hidden = true; $('#admin-app').hidden = false; renderAdmin(); }
 
-  const mediaCount = events.reduce((s, e) => s + (e.media ? e.media.length : 0), 0);
-  $('#a-timeline-stats').innerHTML =
-    `共 <b>${events.length}</b> 条记录 · <b>${mediaCount}</b> 个媒体文件`;
-
-  list.innerHTML = '';
-  if (!arr.length) {
-    list.appendChild(el('div', 'empty',
-      `<div class="big">📝</div><p>${q ? '没有匹配的记录' : '还没有记录，点击「+ 新建活动」开始吧'}</p>`));
-    return;
-  }
-  groupByMonth(arr).forEach(([key, items]) => {
-    const [y, m] = key.split('-');
-    const head = el('div', 'month-head');
-    head.innerHTML = `<span class="dot"></span>${y} 年 ${Number(m)} 月
-      <span class="count">${items.length} 条</span>`;
-    list.appendChild(head);
-    items.forEach(e => list.appendChild(buildEventCard(e, true)));
-  });
-}
-
-function renderAdminExpense() {
-  const st = computeStats(expenses);
-  $('#a-expense-summary').innerHTML = summaryHTML(st);
-
-  const chart = $('#a-cat-chart');
-  if (st.cats.length) {
-    chart.style.display = '';
-    chart.innerHTML = catChartHTML(st.cats);
-  } else {
-    chart.style.display = 'none';
-  }
-
-  const sel = $('#a-filter-cat');
-  const cats = st.cats.map(([c]) => c);
-  const keep = sel.value;
-  sel.innerHTML = '<option value="all">全部分类</option>' +
-    cats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
-  sel.value = cats.includes(keep) ? keep : 'all';
-  aCatQuery = sel.value;
-
-  const q = aQuery.trim().toLowerCase();
-  let arr = sortEvents(expenses).filter(e => matchExpense(e, q));
-  if (aCatQuery !== 'all') {
-    arr = arr.filter(e => ((e.category || '未分类').trim() || '未分类') === aCatQuery);
-  }
-
-  const list = $('#a-expense-list');
-  list.innerHTML = '';
-  if (!arr.length) {
-    list.appendChild(el('div', 'empty',
-      `<div class="big">🧾</div><p>${expenses.length ? '没有匹配的支出' : '还没有支出记录'}</p>`));
-    return;
-  }
-  arr.forEach(e => list.appendChild(buildExpenseItem(e, true)));
-}
-
-function renderSettingsForm() {
-  if ($('#set-name') !== document.activeElement) $('#set-name').value = settings.siteName;
-  if ($('#set-desc') !== document.activeElement) $('#set-desc').value = settings.siteDesc;
-}
-
-function updateAddBtn() {
-  const btn = $('#btn-add');
-  if (currentAdminTab === 'settings') { btn.hidden = true; return; }
-  btn.hidden = false;
-  btn.textContent = currentAdminTab === 'timeline' ? '+ 新建活动' : '+ 记一笔支出';
-}
-
-function showFront() {
-  $('#front-app').hidden = false;
-  $('#admin-app').hidden = true;
-  renderFront();
-  window.scrollTo({ top: 0 });
-}
-function showAdmin() {
-  if (!isAdmin) return;
-  $('#front-app').hidden = true;
-  $('#admin-app').hidden = false;
-  renderAdmin();
-  window.scrollTo({ top: 0 });
-}
-
+// 登录
 $('#btn-to-admin').addEventListener('click', async () => {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session) {
-    isAdmin = true;
-    showAdmin();
-  } else {
-    $('#login-email').value = '';
-    $('#login-pwd').value = '';
-    $('#login-hint').textContent = '';
-    openModal('#modal-login');
-    setTimeout(() => $('#login-email').focus(), 60);
-  }
+  if(!supabaseClient) { alert("库未加载，请刷新页面"); return; }
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (session) { isAdmin = true; showAdmin(); }
+  else { $('#modal-login').classList.add('open'); }
 });
-$('#btn-to-front').addEventListener('click', showFront);
 
-$('#login-submit').addEventListener('click', doLogin);
-$('#login-pwd').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-
-async function doLogin() {
+$('#login-submit').addEventListener('click', async () => {
   const email = $('#login-email').value.trim();
   const pwd = $('#login-pwd').value;
-  if (!email || !pwd) { $('#login-hint').textContent = '请输入邮箱和密码'; return; }
-  
-  $('#login-submit').disabled = true;
+  if (!email || !pwd) return;
   $('#login-submit').textContent = '登录中...';
-  
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pwd });
-  
-  $('#login-submit').disabled = false;
+  const { error } = await supabaseClient.auth.signInWithPassword({ email, password: pwd });
   $('#login-submit').textContent = '进入后台';
-
-  if (error) {
-    $('#login-hint').textContent = '登录失败：' + error.message;
-    return;
-  }
-  isAdmin = true;
-  closeModal($('#modal-login'));
-  showAdmin();
-}
-
-$('#btn-logout').addEventListener('click', async () => {
-  await supabase.auth.signOut();
-  isAdmin = false;
-  showFront();
+  if (error) { $('#login-hint').textContent = error.message; return; }
+  isAdmin = true; $('#modal-login').classList.remove('open'); showAdmin();
 });
 
-$$('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    currentAdminTab = tab.dataset.atab;
-    $$('.tab').forEach(t => t.classList.toggle('active', t === tab));
-    $$('.a-panel').forEach(p =>
-      p.classList.toggle('active', p.id === 'a-panel-' + currentAdminTab));
-    updateAddBtn();
-    if (currentAdminTab === 'settings') renderSettingsForm();
-  });
-});
+$('#btn-to-front').addEventListener('click', showFront);
+$('#btn-logout').addEventListener('click', async () => { await supabaseClient.auth.signOut(); isAdmin = false; showFront(); });
 
-$('#btn-add').addEventListener('click', () => {
-  if (currentAdminTab === 'timeline') openEventModal(null);
-  else if (currentAdminTab === 'expense') openExpenseModal(null);
-});
+// 弹窗控制
+$$('[data-close]').forEach(btn => btn.addEventListener('click', (e) => e.target.closest('.modal').classList.remove('open')));
 
-function openModal(sel) {
-  $(sel).classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-function closeModal(m) {
-  m.classList.remove('open');
-  if (!$$('.modal.open').length) document.body.style.overflow = '';
-}
-$$('.modal').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) closeModal(m); });
-});
-document.addEventListener('click', e => {
-  const btn = e.target.closest('[data-close]');
-  if (btn) { const m = btn.closest('.modal'); if (m) closeModal(m); }
-});
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    $$('.modal.open').forEach(closeModal);
-    $('#lightbox').click();
-  }
-});
-
-let editingEventId = null;
-let pendingEventMedia = [];
-let previewURLs = [];
-
-function clearPreviewURLs() {
-  previewURLs.forEach(u => { try { URL.revokeObjectURL(u); } catch (e) {} });
-  previewURLs = [];
+// 数据库操作
+async function loadData() {
+  const [ev, ex] = await Promise.all([
+    supabaseClient.from('events').select('*').order('date', { ascending: false }),
+    supabaseClient.from('expenses').select('*').order('date', { ascending: false })
+  ]);
+  events = ev.data || []; expenses = ex.data || [];
 }
 
-function renderEventPreview() {
-  clearPreviewURLs();
-  const box = $('#ev-preview');
-  box.innerHTML = '';
-  pendingEventMedia.forEach((m, i) => {
-    const url = m.file ? URL.createObjectURL(m.file) : m.url;
-    if (m.file) previewURLs.push(url);
-    const d = el('div', 'pv-item');
-    d.innerHTML = m.type === 'video'
-      ? `<video src="${url}" muted playsinline></video>`
-      : `<img src="${url}" alt="">`;
-    const del = el('button', 'pv-del', '✕');
-    del.type = 'button';
-    del.onclick = ev => {
-      ev.stopPropagation();
-      pendingEventMedia.splice(i, 1);
-      renderEventPreview();
-    };
-    d.appendChild(del);
-    box.appendChild(d);
-  });
-}
+// 新建/保存活动
+window.openEventModal = function(id) {
+  const e = id ? events.find(x => x.id === id) : null;
+  $('#ev-date').value = e ? e.date : todayStr();
+  $('#ev-title').value = e ? e.title : '';
+  $('#ev-desc').value = e ? e.desc : '';
+  $('#ev-tags').value = e ? (e.tags||[]).join(',') : '';
+  $('#modal-event').dataset.id = id || '';
+  $('#modal-event').classList.add('open');
+};
 
-function addEventFiles(files) {
-  for (const f of files) {
-    if (f.size > 50 * 1024 * 1024) {
-      alert(`文件 "${f.name}" 超过 50MB，请压缩后再上传。`);
-      continue;
-    }
-    if (!f.type.startsWith('image/') && !f.type.startsWith('video/')) continue;
-    pendingEventMedia.push({
-      file: f,
-      type: f.type.startsWith('video/') ? 'video' : 'image',
-      name: f.name
-    });
-  }
-  renderEventPreview();
-}
-
-function openEventModal(id) {
-  if (!isAdmin) return;
-  editingEventId = id || null;
-  pendingEventMedia = [];
-
-  if (id) {
-    const e = events.find(x => x.id === id);
-    if (!e) return;
-    $('#ev-modal-title').textContent = '编辑活动记录';
-    $('#ev-date').value = e.date || todayStr();
-    $('#ev-type').value = e.type || '演唱会';
-    $('#ev-title').value = e.title || '';
-    $('#ev-desc').value = e.desc || '';
-    $('#ev-tags').value = (e.tags || []).join(', ');
-    pendingEventMedia = (e.media || []).map(m => Object.assign({}, m));
-  } else {
-    $('#ev-modal-title').textContent = '新建活动记录';
-    $('#ev-date').value = todayStr();
-    $('#ev-type').value = '演唱会';
-    $('#ev-title').value = '';
-    $('#ev-desc').value = '';
-    $('#ev-tags').value = '';
-  }
-  renderEventPreview();
-  openModal('#modal-event');
-  setTimeout(() => $('#ev-title').focus(), 60);
-}
-
-$('#ev-drop').addEventListener('click', () => $('#ev-files').click());
-$('#ev-files').addEventListener('change', e => { addEventFiles(e.target.files); e.target.value = ''; });
-['dragover', 'dragenter'].forEach(t => $('#ev-drop').addEventListener(t, e => { e.preventDefault(); $('#ev-drop').classList.add('drag'); }));
-['dragleave', 'dragend'].forEach(t => $('#ev-drop').addEventListener(t, () => $('#ev-drop').classList.remove('drag')));
-$('#ev-drop').addEventListener('drop', e => { e.preventDefault(); $('#ev-drop').classList.remove('drag'); addEventFiles(e.dataTransfer.files); });
-
-async function uploadFile(file) {
-  const bucket = file.type.startsWith('video/') ? 'videos' : 'photos';
-  const ext = file.name.split('.').pop() || 'bin';
-  const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-  
-  $('#ev-drop-text').textContent = `正在上传 ${file.name}...`;
-
-  const { error } = await supabase.storage.from(bucket).upload(path, file);
-  if (error) throw error;
-  
-  const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(path);
-  return publicUrl;
-}
+window.delEvent = async function(id) {
+  if(!confirm('确定删除？')) return;
+  await supabaseClient.from('events').delete().eq('id', id);
+  await loadData(); renderAdmin();
+};
 
 $('#ev-save').addEventListener('click', async () => {
-  const date = $('#ev-date').value || todayStr();
-  const title = $('#ev-title').value.trim();
-  if (!title) { alert('请填写活动标题'); $('#ev-title').focus(); return; }
-
-  $('#ev-save').disabled = true;
+  const title = $('#ev-title').value.trim(); if (!title) return alert('请输入标题');
+  const id = $('#modal-event').dataset.id;
   $('#ev-save').textContent = '保存中...';
-
-  try {
-    const mediaToSave = [];
-    for (const m of pendingEventMedia) {
-      if (m.file) {
-        const url = await uploadFile(m.file);
-        mediaToSave.push({ url, type: m.type, name: m.name });
-      } else {
-        mediaToSave.push(m);
-      }
-    }
-
-    const rec = {
-      date,
-      type: $('#ev-type').value,
-      title,
-      desc: $('#ev-desc').value.trim(),
-      tags: $('#ev-tags').value.split(/[,，]/).map(s => s.trim()).filter(Boolean),
-      media: mediaToSave
-    };
-    if (editingEventId) rec.id = editingEventId;
-
-    const { error } = await supabase.from('events').upsert(rec);
-    if (error) throw error;
-    
-    await loadDataFromSupabase();
-    closeModal($('#modal-event'));
-    renderAdmin();
-  } catch (err) {
-    alert('保存失败：' + err.message);
-  } finally {
-    $('#ev-save').disabled = false;
-    $('#ev-save').textContent = '保存';
-    $('#ev-drop-text').textContent = '点击或拖拽文件到这里上传';
-  }
+  const rec = { date: $('#ev-date').value, type: $('#ev-type').value, title, desc: $('#ev-desc').value, tags: $('#ev-tags').value.split(',') };
+  if (id) rec.id = id;
+  const { error } = await supabaseClient.from('events').upsert(rec);
+  $('#ev-save').textContent = '保存';
+  if (error) return alert(error.message);
+  $('#modal-event').classList.remove('open'); await loadData(); renderAdmin();
 });
 
-let editingExpenseId = null;
-let pendingExpenseMedia = [];
+window.openExpenseModal = function(id) {
+  const e = id ? expenses.find(x => x.id === id) : null;
+  $('#ex-date').value = e ? e.date : todayStr();
+  $('#ex-amount').value = e ? e.amount : '';
+  $('#ex-title').value = e ? e.title : '';
+  $('#ex-cat').value = e ? e.category : '';
+  $('#ex-note').value = e ? e.note : '';
+  $('#modal-expense').dataset.id = id || '';
+  $('#modal-expense').classList.add('open');
+};
 
-function renderExpensePreview() {
-  clearPreviewURLs();
-  const box = $('#ex-preview');
-  box.innerHTML = '';
-  pendingExpenseMedia.forEach((m, i) => {
-    const url = m.file ? URL.createObjectURL(m.file) : m.url;
-    if (m.file) previewURLs.push(url);
-    const d = el('div', 'pv-item');
-    d.innerHTML = `<img src="${url}" alt="">`;
-    const del = el('button', 'pv-del', '✕');
-    del.type = 'button';
-    del.onclick = ev => { ev.stopPropagation(); pendingExpenseMedia.splice(i, 1); renderExpensePreview(); };
-    d.appendChild(del);
-    box.appendChild(d);
-  });
-}
-
-function addExpenseFiles(files) {
-  for (const f of files) {
-    if (f.size > 50 * 1024 * 1024) { alert(`凭证 "${f.name}" 超过 50MB，请压缩。`); continue; }
-    if (!f.type.startsWith('image/')) continue;
-    pendingExpenseMedia.push({ file: f, type: 'image', name: f.name });
-  }
-  renderExpensePreview();
-}
-
-function openExpenseModal(id) {
-  if (!isAdmin) return;
-  editingExpenseId = id || null;
-  pendingExpenseMedia = [];
-
-  if (id) {
-    const e = expenses.find(x => x.id === id);
-    if (!e) return;
-    $('#ex-modal-title').textContent = '编辑支出';
-    $('#ex-date').value = e.date || todayStr();
-    $('#ex-amount').value = e.amount ?? '';
-    $('#ex-title').value = e.title || '';
-    $('#ex-cat').value = e.category || '';
-    $('#ex-note').value = e.note || '';
-    pendingExpenseMedia = (e.receipts || []).map(m => Object.assign({}, m));
-  } else {
-    $('#ex-modal-title').textContent = '新建支出';
-    $('#ex-date').value = todayStr();
-    $('#ex-amount').value = '';
-    $('#ex-title').value = '';
-    $('#ex-cat').value = '';
-    $('#ex-note').value = '';
-  }
-  renderExpensePreview();
-  openModal('#modal-expense');
-  setTimeout(() => $('#ex-title').focus(), 60);
-}
-
-$('#ex-drop').addEventListener('click', () => $('#ex-files').click());
-$('#ex-files').addEventListener('change', e => { addExpenseFiles(e.target.files); e.target.value = ''; });
-['dragover', 'dragenter'].forEach(t => $('#ex-drop').addEventListener(t, e => { e.preventDefault(); $('#ex-drop').classList.add('drag'); }));
-['dragleave', 'dragend'].forEach(t => $('#ex-drop').addEventListener(t, () => $('#ex-drop').classList.remove('drag')));
-$('#ex-drop').addEventListener('drop', e => { e.preventDefault(); $('#ex-drop').classList.remove('drag'); addExpenseFiles(e.dataTransfer.files); });
+window.delExpense = async function(id) {
+  if(!confirm('确定删除？')) return;
+  await supabaseClient.from('expenses').delete().eq('id', id);
+  await loadData(); renderAdmin();
+};
 
 $('#ex-save').addEventListener('click', async () => {
-  const date = $('#ex-date').value || todayStr();
-  const amount = Number($('#ex-amount').value);
-  const title = $('#ex-title').value.trim();
-  if (!title) { alert('请填写支出项目名称'); $('#ex-title').focus(); return; }
-  if (!(amount > 0)) { alert('请填写正确的金额'); $('#ex-amount').focus(); return; }
-
-  $('#ex-save').disabled = true;
+  const title = $('#ex-title').value.trim(); if (!title) return alert('请输入项目');
+  const amount = Number($('#ex-amount').value); if (!(amount>0)) return alert('金额不正确');
+  const id = $('#modal-expense').dataset.id;
   $('#ex-save').textContent = '保存中...';
-
-  try {
-    const receiptsToSave = [];
-    for (const m of pendingExpenseMedia) {
-      if (m.file) {
-        const url = await uploadFile(m.file);
-        receiptsToSave.push({ url, type: m.type, name: m.name });
-      } else {
-        receiptsToSave.push(m);
-      }
-    }
-
-    const rec = {
-      date,
-      amount,
-      title,
-      category: $('#ex-cat').value.trim() || '未分类',
-      note: $('#ex-note').value.trim(),
-      receipts: receiptsToSave
-    };
-    if (editingExpenseId) rec.id = editingExpenseId;
-
-    const { error } = await supabase.from('expenses').upsert(rec);
-    if (error) throw error;
-
-    await loadDataFromSupabase();
-    closeModal($('#modal-expense'));
-    renderAdmin();
-  } catch (err) {
-    alert('保存失败：' + err.message);
-  } finally {
-    $('#ex-save').disabled = false;
-    $('#ex-save').textContent = '保存';
-  }
+  const rec = { date: $('#ex-date').value, amount, title, category: $('#ex-cat').value, note: $('#ex-note').value };
+  if (id) rec.id = id;
+  const { error } = await supabaseClient.from('expenses').upsert(rec);
+  $('#ex-save').textContent = '保存';
+  if (error) return alert(error.message);
+  $('#modal-expense').classList.remove('open'); await loadData(); renderAdmin();
 });
 
-$('#a-timeline-list').addEventListener('click', async e => {
-  const btn = e.target.closest('button[data-act]');
-  if (!btn) return;
-  const id = btn.dataset.id;
-  if (btn.dataset.act === 'edit') { openEventModal(id); return; }
-  if (btn.dataset.act === 'del') {
-    if (!confirm('确定删除这条活动记录吗？')) return;
-    const { error } = await supabase.from('events').delete().eq('id', id);
-    if (error) { alert('删除失败：' + error.message); return; }
-    await loadDataFromSupabase();
-    renderAdmin();
-  }
-});
-
-$('#a-expense-list').addEventListener('click', async e => {
-  const btn = e.target.closest('button[data-act]');
-  if (!btn) return;
-  const id = btn.dataset.id;
-  if (btn.dataset.act === 'edit') { openExpenseModal(id); return; }
-  if (btn.dataset.act === 'del') {
-    if (!confirm('确定删除这条支出记录吗？')) return;
-    const { error } = await supabase.from('expenses').delete().eq('id', id);
-    if (error) { alert('删除失败：' + error.message); return; }
-    await loadDataFromSupabase();
-    renderAdmin();
-  }
-});
-
-let fTimer, aTimer;
-$('#f-search-events').addEventListener('input', e => {
-  clearTimeout(fTimer);
-  fTimer = setTimeout(() => { fQuery = e.target.value; renderFrontTimeline(); }, 180);
-});
-$('#a-search-events').addEventListener('input', e => {
-  clearTimeout(aTimer);
-  aTimer = setTimeout(() => { aQuery = e.target.value; renderAdminTimeline(); }, 180);
-});
-$('#a-search-expenses').addEventListener('input', e => {
-  clearTimeout(aTimer);
-  aTimer = setTimeout(() => { aQuery = e.target.value; renderAdminExpense(); }, 180);
-});
-$('#a-filter-cat').addEventListener('change', e => {
-  aCatQuery = e.target.value;
-  renderAdminExpense();
-});
-
-$('#set-save-site').addEventListener('click', () => {
-  const name = $('#set-name').value.trim() || '星光记录站';
-  const desc = $('#set-desc').value.trim();
-  settings.siteName = name;
-  settings.siteDesc = desc;
-  saveSettings();
-  $('#a-site-name').textContent = name;
-  alert('站点信息已保存');
-});
-
-async function loadDataFromSupabase() {
-  const [evRes, exRes] = await Promise.all([
-    supabase.from('events').select('*').order('date', { ascending: false }),
-    supabase.from('expenses').select('*').order('date', { ascending: false })
-  ]);
-  if (evRes.error) console.error(evRes.error);
-  else events = evRes.data;
-  
-  if (exRes.error) console.error(exRes.error);
-  else expenses = exRes.data;
-}
-
+// 启动
 (async function init() {
-  await loadDataFromSupabase();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session) isAdmin = true;
+  if(supabaseClient) {
+    await loadData();
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session) isAdmin = true;
+  }
   showFront();
 })();
 </script>
