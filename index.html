@@ -11,87 +11,127 @@ html{scroll-behavior:smooth;height:100%}
 body{
   margin:0;min-height:100%;color-scheme:dark;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  background:#0a0b10;color:#e9eaf2;-webkit-font-smoothing:antialiased;
-  background-image:radial-gradient(900px 520px at 8% -10%, rgba(255,92,138,.14), transparent 62%),radial-gradient(820px 520px at 92% -4%, rgba(168,85,247,.13), transparent 62%);
+  background:#050505;color:#ededed;-webkit-font-smoothing:antialiased;
+  /* 红黑背景光晕 */
+  background-image:
+    radial-gradient(900px 520px at 8% -10%, rgba(230,0,0,.12), transparent 62%),
+    radial-gradient(820px 520px at 92% -4%, rgba(130,0,0,.1), transparent 62%);
   background-attachment:fixed;
 }
+/* 按钮 */
 .btn{border:none;border-radius:10px;padding:9px 15px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:.16s;display:inline-flex;align-items:center;gap:6px;justify-content:center}
-.btn.primary{background:linear-gradient(135deg,#ff5c8a,#a855f7);color:#fff}
-.btn.ghost{background:#1a1d27;color:#c0c4d4;border:1px solid #272b38}
-.btn.danger{background:rgba(255,92,138,.14);color:#ff7ba3;border:1px solid rgba(255,92,138,.35)}
-.icon-btn{background:transparent;border:none;color:#8b90a6;font-size:16px;cursor:pointer;width:30px;height:30px;border-radius:8px}
+.btn.primary{background:linear-gradient(135deg,#e60000,#990000);color:#fff;box-shadow:0 6px 18px rgba(230,0,0,.25)}
+.btn.primary:hover{filter:brightness(1.2);transform:translateY(-1px)}
+.btn.ghost{background:#111;color:#bbb;border:1px solid #333}
+.btn.ghost:hover{background:#1a1a1a;color:#fff;border-color:#555}
+.btn.danger{background:rgba(230,0,0,.15);color:#ff4d4d;border:1px solid rgba(230,0,0,.4)}
+.btn.danger:hover{background:rgba(230,0,0,.25)}
+.icon-btn{background:transparent;border:none;color:#888;font-size:16px;cursor:pointer;width:30px;height:30px;border-radius:8px;transition:.15s}
+.icon-btn:hover{background:#222;color:#fff}
+/* 品牌 Logo */
 .brand{display:flex;align-items:center;gap:11px}
-.logo{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:18px;background:linear-gradient(135deg,#ff5c8a,#a855f7)}
-.brand-name{font-size:15px;font-weight:700}
-.brand-sub{margin-top:1px;font-size:11.5px;color:#7d8299}
-.front-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:22px;padding:13px 28px;background:rgba(10,11,16,.82);backdrop-filter:blur(14px);border-bottom:1px solid #1c1f29;flex-wrap:wrap}
+.logo{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:18px;background:linear-gradient(135deg,#e60000,#660000);box-shadow:0 6px 18px rgba(230,0,0,.3)}
+.brand-name{font-size:15px;font-weight:700;letter-spacing:.3px}
+.brand-sub{margin-top:1px;font-size:11.5px;color:#888}
+/* 头部导航 */
+.front-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:22px;padding:13px 28px;background:rgba(5,5,5,.85);backdrop-filter:blur(14px);border-bottom:1px solid #1f1f1f;flex-wrap:wrap}
 .front-nav{display:flex;gap:6px;margin-left:auto}
-.front-nav a{color:#9aa0b5;text-decoration:none;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:9px}
+.front-nav a{color:#999;text-decoration:none;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:9px;transition:.18s}
+.front-nav a:hover{color:#fff;background:#1a1a1a}
 .front-main{max-width:980px;margin:0 auto;padding:30px 24px 70px}
-.hero{position:relative;text-align:center;padding:62px 24px 50px;border-radius:26px;border:1px solid #1f232e;margin-bottom:44px;background:linear-gradient(180deg,#12141c,#0d0f16)}
-.hero h1{font-size:clamp(27px,5vw,44px);margin:16px 0 12px;background:linear-gradient(120deg,#ffffff 25%,#ffb3c9 55%,#c9a3ff 90%);-webkit-background-clip:text;color:transparent}
-.hero-stats{display:flex;justify-content:center;gap:46px;margin-top:36px;flex-wrap:wrap}
+/* 主页 Hero */
+.hero{position:relative;text-align:center;padding:62px 24px 50px;border-radius:26px;border:1px solid #1f1f1f;margin-bottom:44px;background:linear-gradient(180deg,#111,#080808);overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.03) 1px, transparent 1px);background-size:26px 26px;mask-image:radial-gradient(circle at 50% 30%, #000, transparent 78%)}
+.hero h1{position:relative;font-size:clamp(27px,5vw,44px);margin:16px 0 12px;letter-spacing:1px;line-height:1.25;background:linear-gradient(120deg,#ffffff 20%,#ff4d4d 60%,#990000 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-stats{position:relative;display:flex;justify-content:center;gap:46px;margin-top:36px;flex-wrap:wrap}
 .hero-stats .item{text-align:center;min-width:70px}
 .hero-stats b{display:block;font-size:25px;font-weight:800;font-variant-numeric:tabular-nums}
-.hero-stats span{display:block;margin-top:5px;font-size:12px;color:#7d8299}
+.hero-stats span{display:block;margin-top:5px;font-size:12px;color:#888}
+/* 分区 */
 .front-section{margin-bottom:56px}
-.section-head h2{font-size:19px;margin:0;letter-spacing:.5px}
-.section-sub{font-size:12.5px;color:#7d8299}
+.section-head h2{font-size:19px;margin:0;letter-spacing:.5px;color:#eee}
+.section-head h2::before{content:'';display:inline-block;width:5px;height:16px;border-radius:3px;margin-right:10px;vertical-align:-2px;background:linear-gradient(135deg,#e60000,#660000)}
 .toolbar{display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
-.search{flex:1;min-width:180px;background:#141620;border:1px solid #232734;border-radius:11px;padding:11px 14px;color:#e9eaf2;font-size:13.5px;outline:none}
-.select{background:#141620;border:1px solid #232734;border-radius:11px;padding:11px 13px;color:#e9eaf2;font-size:13.5px}
-.ev-card{display:flex;gap:16px;background:#13151d;border:1px solid #1f232e;border-radius:16px;padding:16px;margin-bottom:12px}
-.ev-side{flex:0 0 62px;text-align:center;border-right:1px solid #1f232e;padding-right:14px}
-.ev-day{font-size:24px;font-weight:800;background:linear-gradient(135deg,#ff5c8a,#a855f7);-webkit-background-clip:text;color:transparent}
-.ev-main{flex:1}
-.ev-head h3{font-size:15px;margin:0;font-weight:700}
-.ev-desc{font-size:13.5px;color:#a2a7ba;line-height:1.75;margin:8px 0 0}
-.ev-tags span{font-size:11.5px;color:#8b90a6;background:#1a1d27;padding:3px 9px;border-radius:8px;margin-right:5px}
+.search{flex:1;min-width:180px;background:#111;border:1px solid #2a2a2a;border-radius:11px;padding:11px 14px;color:#eee;font-size:13.5px;outline:none;transition:.16s}
+.search:focus{border-color:rgba(230,0,0,.6);box-shadow:0 0 0 3px rgba(230,0,0,.1)}
+.select{background:#111;border:1px solid #2a2a2a;border-radius:11px;padding:11px 13px;color:#eee;font-size:13.5px;outline:none}
+/* 活动卡片 */
+.ev-card{display:flex;gap:16px;background:#0d0d0d;border:1px solid #1f1f1f;border-radius:16px;padding:16px;margin-bottom:12px;transition:.2s}
+.ev-card:hover{border-color:#3a1a1a;background:#111}
+.ev-side{flex:0 0 62px;text-align:center;border-right:1px solid #1f1f1f;padding-right:14px}
+.ev-day{font-size:24px;font-weight:800;line-height:1.1;background:linear-gradient(135deg,#ff4d4d,#990000);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ev-mon{font-size:11.5px;color:#888;margin-top:3px}
+.ev-week{font-size:11px;color:#555;margin-top:2px}
+.ev-main{flex:1;min-width:0}
+.ev-head h3{font-size:15px;margin:0;font-weight:700;line-height:1.5;word-break:break-word}
+.ev-desc{font-size:13.5px;color:#aaa;line-height:1.75;margin:8px 0 0;white-space:pre-wrap}
+.ev-tags span{font-size:11.5px;color:#888;background:#1a1a1a;padding:3px 9px;border-radius:8px;margin-right:5px}
+/* 媒体网格 */
 .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px;margin-top:12px}
-.media-item{aspect-ratio:1;border-radius:10px;overflow:hidden;background:#0e1017;cursor:zoom-in;position:relative}
-.media-item img,.media-item video{width:100%;height:100%;object-fit:cover}
+.media-item{aspect-ratio:1;border-radius:10px;overflow:hidden;background:#000;cursor:zoom-in;position:relative;border:1px solid #222}
+.media-item img,.media-item video{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.media-item:hover img{transform:scale(1.05)}
+/* 账本卡片 */
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:18px}
-.stat-card{background:#161924;border:1px solid #222633;border-radius:15px;padding:15px 18px}
-.stat-card .label{font-size:12.5px;color:#8b90a6}
-.stat-card .value{font-size:22px;font-weight:800;margin-top:6px}
-.cat-chart{background:#13151d;border:1px solid #1f232e;border-radius:15px;padding:16px 18px;margin-bottom:18px}
-.ex-item{display:flex;align-items:center;gap:14px;background:#13151d;border:1px solid #1f232e;border-radius:13px;padding:13px 16px;margin-bottom:9px}
-.ex-date{font-size:11.5px;color:#7d8299;background:#1a1d27;padding:5px 9px;border-radius:8px}
-.ex-main{flex:1}
+.stat-card{background:#0f0f0f;border:1px solid #1f1f1f;border-radius:15px;padding:15px 18px}
+.stat-card .label{font-size:12.5px;color:#888}
+.stat-card .value{font-size:22px;font-weight:800;margin-top:6px;font-variant-numeric:tabular-nums}
+.ex-item{display:flex;align-items:center;gap:14px;background:#0d0d0d;border:1px solid #1f1f1f;border-radius:13px;padding:13px 16px;margin-bottom:9px;transition:.18s}
+.ex-item:hover{border-color:#3a1a1a;background:#111}
+.ex-date{font-size:11.5px;color:#888;background:#1a1a1a;padding:5px 9px;border-radius:8px;font-variant-numeric:tabular-nums}
+.ex-main{flex:1;min-width:0}
 .ex-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.ex-note{font-size:12.5px;color:#7d8299;margin-top:3px}
+.ex-note{font-size:12.5px;color:#777;margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ex-amount{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
-.admin-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:18px;padding:12px 24px;background:rgba(10,11,16,.86);border-bottom:1px solid #1c1f29}
-.tabs{display:flex;gap:4px;background:#141620;padding:4px;border-radius:12px}
-.tab{background:transparent;border:none;color:#8b90a6;padding:8px 15px;border-radius:9px;font-size:13.5px;font-weight:600}
-.tab.active{background:rgba(255,92,138,.2);color:#fff}
+/* 标签 Pill */
+.pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px}
+.pill.income{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.3)}
+.pill.expense{background:rgba(230,0,0,.15);color:#ff4d4d;border:1px solid rgba(230,0,0,.4)}
+/* 后台 Header */
+.admin-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:18px;padding:12px 24px;background:rgba(5,5,5,.9);backdrop-filter:blur(14px);border-bottom:1px solid #1f1f1f;flex-wrap:wrap}
+.tabs{display:flex;gap:4px;background:#111;padding:4px;border-radius:12px;border:1px solid #222}
+.tab{background:transparent;border:none;color:#888;padding:8px 15px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;transition:.18s}
+.tab:hover{color:#ccc}
+.tab.active{background:linear-gradient(135deg,rgba(230,0,0,.2),rgba(130,0,0,.2));color:#fff;box-shadow:inset 0 0 0 1px rgba(230,0,0,.4)}
+.top-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
 .admin-main{max-width:1080px;margin:0 auto;padding:26px 24px 90px}
 .a-panel{display:none}
-.a-panel.active{display:block}
-.modal{position:fixed;inset:0;background:rgba(5,6,10,.76);display:none;align-items:center;justify-content:center;padding:20px;z-index:200}
+.a-panel.active{display:block;animation:fade .24s ease}
+@keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+/* 弹窗 */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;z-index:200}
 .modal.open{display:flex}
-.modal-box{background:#12141c;border:1px solid #252938;border-radius:18px;width:100%;max-width:620px;display:flex;flex-direction:column}
-.modal-head{display:flex;align-items:center;justify-content:space-between;padding:17px 22px;border-bottom:1px solid #1f232e}
+.modal-box{background:#0f0f0f;border:1px solid #2a2a2a;border-radius:18px;width:100%;max-width:620px;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.8);animation:pop .22s ease}
+@keyframes pop{from{opacity:0;transform:scale(.96) translateY(10px)}to{opacity:1;transform:none}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:17px 22px;border-bottom:1px solid #1f1f1f}
+.modal-head h2{font-size:16px;margin:0;color:#eee}
 .modal-body{padding:20px 22px;display:flex;flex-direction:column;gap:14px}
-.modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:15px 22px;border-top:1px solid #1f232e}
+.modal-foot{display:flex;justify-content:flex-end;gap:10px;padding:15px 22px;border-top:1px solid #1f1f1f}
+/* 表单 */
 .field{display:flex;flex-direction:column;gap:7px;flex:1}
-.field>span{font-size:12.5px;color:#8b90a6;font-weight:600}
-.field input,.field select,.field textarea{background:#0e1017;border:1px solid #242836;border-radius:10px;padding:11px 13px;color:#e9eaf2;font-size:13.5px;outline:none;width:100%}
+.field>span{font-size:12.5px;color:#888;font-weight:600}
+.field input,.field select,.field textarea{background:#050505;border:1px solid #2a2a2a;border-radius:10px;padding:11px 13px;color:#eee;font-size:13.5px;outline:none;width:100%;transition:.16s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(230,0,0,.6);box-shadow:0 0 0 3px rgba(230,0,0,.1)}
+.field textarea{resize:vertical;line-height:1.7}
 .row{display:flex;gap:14px}
-.pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px}
-.pill.income{background:rgba(52,211,153,.16);color:#34d399;border:1px solid rgba(52,211,153,.3)}
-.pill.expense{background:rgba(255,92,138,.16);color:#ff7ba3;border:1px solid rgba(255,92,138,.3)}
-.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:300;display:none;align-items:center;justify-content:center;padding:28px}
-.lightbox.open{display:flex}
-.lightbox img,.lightbox video{max-width:100%;max-height:100%}
-.empty{text-align:center;padding:58px 20px;color:#5a5f74}
+/* 上传区 */
+.dropzone{border:1.5px dashed #333;border-radius:12px;padding:20px;text-align:center;color:#777;font-size:13px;cursor:pointer;display:block;position:relative;overflow:hidden;transition:.18s;background:#0a0a0a}
+.dropzone:hover{border-color:rgba(230,0,0,.5);color:#ff4d4d}
+.dropzone input[type="file"] {position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:100px}
 .media-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:10px}
-.pv-item{aspect-ratio:1;border-radius:9px;overflow:hidden;background:#0e1017;position:relative;border:1px solid #242836}
+.pv-item{aspect-ratio:1;border-radius:9px;overflow:hidden;background:#000;position:relative;border:1px solid #222}
 .pv-item img,.pv-item video{width:100%;height:100%;object-fit:cover;display:block}
-.pv-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.75);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10}
-.dropzone{border:1.5px dashed #2c3140;border-radius:12px;padding:20px;text-align:center;color:#6b7089;font-size:13px;cursor:pointer;display:block;position:relative; overflow:hidden;}
-.dropzone input[type="file"] {position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 100px;}
-.front-footer{text-align:center;padding:30px 20px 46px;color:#5a5f74;font-size:12.5px;border-top:1px solid #161a23}
+.pv-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.8);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10}
+.pv-del:hover{background:#e60000}
+/* 空状态 */
+.empty{text-align:center;padding:58px 20px;color:#555}
+.empty .big{font-size:40px;margin-bottom:14px;opacity:.75}
+.empty p{margin:0;font-size:13.5px}
+/* 页脚 & 大图 */
+.front-footer{text-align:center;padding:30px 20px 46px;color:#555;font-size:12.5px;border-top:1px solid #1a1a1a}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:300;display:none;align-items:center;justify-content:center;padding:28px;cursor:zoom-out}
+.lightbox.open{display:flex}
+.lightbox img,.lightbox video{max-width:100%;max-height:100%;border-radius:10px;box-shadow:0 20px 70px rgba(230,0,0,.15)}
 </style>
 </head>
 <body>
@@ -139,7 +179,7 @@ body{
     <section id="a-panel-timeline" class="a-panel active"><div id="a-timeline-list"></div></section>
     <section id="a-panel-expense" class="a-panel"><div class="summary" id="a-expense-summary"></div><div id="a-expense-list"></div></section>
     <section id="a-panel-settings" class="a-panel">
-      <div style="background:#13151d;border:1px solid #1f232e;border-radius:16px;padding:20px;max-width:400px">
+      <div style="background:#0f0f0f;border:1px solid #2a2a2a;border-radius:16px;padding:20px;max-width:400px">
         <h3>退出登录</h3><button class="btn danger" id="btn-logout" style="margin-top:10px">退出登录</button>
       </div>
     </section>
@@ -152,7 +192,7 @@ body{
     <div class="modal-body">
       <label class="field"><span>管理员邮箱</span><input type="email" id="login-email" placeholder="输入邮箱"></label>
       <label class="field"><span>密码</span><input type="password" id="login-pwd" placeholder="输入密码"></label>
-      <p id="login-hint" style="color:#ff7ba3;font-size:12px;margin:0"></p>
+      <p id="login-hint" style="color:#ff4d4d;font-size:12px;margin:0"></p>
     </div>
     <div class="modal-foot">
       <button class="btn ghost" id="btn-cancel-login">取消</button>
@@ -236,7 +276,6 @@ window.pendingEvMedia = [];
 window.pendingExMedia = [];
 let editEvId = null, editExId = null;
 
-// 原生网络请求，带超时控制
 async function api(path, method = 'GET', body = null, timeoutMs = 8000) {
   const token = localStorage.getItem('sb_token');
   const headers = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${token || SUPABASE_KEY}` };
@@ -271,7 +310,6 @@ const money = n => '¥' + Number(n || 0).toLocaleString('zh-CN', { minimumFracti
 const shortMoney = n => '¥' + (n >= 10000 ? (n / 10000).toFixed(1) + '万' : Number(n||0).toLocaleString());
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-// ============== 界面控制 ==============
 function showFront() {
   document.getElementById('front-app').hidden = false;
   document.getElementById('admin-app').hidden = true;
@@ -326,7 +364,6 @@ document.getElementById('btn-add').onclick = () => {
   else if (currentAdminTab === 'expense') openExpenseModal(null);
 };
 
-// ============== 登录/登出 ==============
 document.getElementById('login-submit').onclick = async () => {
   const email = document.getElementById('login-email').value.trim();
   const pwd = document.getElementById('login-pwd').value;
@@ -358,7 +395,6 @@ document.getElementById('btn-logout').onclick = () => {
   showFront();
 };
 
-// ============== 文件上传及预览 ==============
 document.getElementById('ev-files').onchange = function() {
   if (!this.files || this.files.length === 0) return;
   for(const f of this.files) {
@@ -446,7 +482,6 @@ async function uploadFile(file) {
   return `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
 }
 
-// ============== 表单弹窗及保存 ==============
 function openEventModal(id) {
   editEvId = id;
   window.pendingEvMedia = [];
@@ -528,13 +563,12 @@ document.getElementById('ex-save').onclick = async function() {
   } catch (err) { alert('保存失败: ' + err.message); } finally { btn.textContent = '保存'; }
 };
 
-// ============== 渲染逻辑 ==============
 function buildEventCard(e, isAdmin) {
   const dt = parseDate(e.date);
   const mediaHTML = e.media && e.media.length ? `<div class="media-grid">${e.media.map(m => {
     const isVideo = m.type === 'video';
     const mediaTag = isVideo 
-      ? `<video src="${m.url}" muted></video><div style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px">▶ 视频</div>` 
+      ? `<video src="${m.url}" muted></video><div style="position:absolute;bottom:4px;right:4px;background:rgba(230,0,0,.8);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px">▶ 视频</div>` 
       : `<img src="${m.url}">`;
     return `<div class="media-item" onclick="showLightbox('${m.url}', '${m.type}')">${mediaTag}</div>`;
   }).join('')}</div>` : '';
@@ -561,13 +595,13 @@ function buildExpenseItem(e, isAdmin) {
     : `<span class="pill expense">支出</span>`;
   const amountHTML = isIncome 
     ? `<div class="ex-amount" style="color:#34d399">+${money(e.amount)}</div>`
-    : `<div class="ex-amount" style="color:#ff7ba3">-${money(e.amount)}</div>`;
+    : `<div class="ex-amount" style="color:#ff4d4d">-${money(e.amount)}</div>`;
 
   return `
     <div class="ex-item">
       <div class="ex-date">${String(dt.getMonth() + 1).padStart(2, '0')}/${String(dt.getDate()).padStart(2, '0')}</div>
       <div class="ex-main">
-        <div class="ex-title">${esc(e.title)} ${typePill} <span style="font-size:11px;color:#7d8299;font-weight:normal">${esc(e.category || '未分类')}</span></div>
+        <div class="ex-title">${esc(e.title)} ${typePill} <span style="font-size:11px;color:#777;font-weight:normal">${esc(e.category || '未分类')}</span></div>
         ${e.note ? `<div class="ex-note">${esc(e.note)}</div>` : ''}
       </div>
       ${amountHTML}
@@ -603,16 +637,16 @@ function renderFront() {
   const balance = totalIncome - totalExpense;
 
   document.getElementById('f-hero-stats').innerHTML = `
-    <div class="item"><b>${events.length}</b><span>活动记录</span></div>
+    <div class="item"><b style="color:#fff">${events.length}</b><span>活动记录</span></div>
     <div class="item"><b style="color:#34d399">${shortMoney(totalIncome)}</b><span>总收入</span></div>
-    <div class="item"><b style="color:#ff7ba3">${shortMoney(totalExpense)}</b><span>总支出</span></div>
+    <div class="item"><b style="color:#ff4d4d">${shortMoney(totalExpense)}</b><span>总支出</span></div>
     <div class="item"><b style="color:#60a5fa">${shortMoney(balance)}</b><span>结余</span></div>`;
 
   document.getElementById('f-timeline-list').innerHTML = events.length ? events.map(e => buildEventCard(e, false)).join('') : '<div class="empty"><div class="big">🕊️</div><p>暂无记录</p></div>';
   
   document.getElementById('f-expense-summary').innerHTML = `
     <div class="stat-card"><div class="label">总收入</div><div class="value" style="color:#34d399">${money(totalIncome)}</div></div>
-    <div class="stat-card"><div class="label">总支出</div><div class="value" style="color:#ff7ba3">${money(totalExpense)}</div></div>
+    <div class="stat-card"><div class="label">总支出</div><div class="value" style="color:#ff4d4d">${money(totalExpense)}</div></div>
     <div class="stat-card"><div class="label">当前结余</div><div class="value" style="color:#60a5fa">${money(balance)}</div></div>`;
 
   document.getElementById('f-expense-list').innerHTML = expenses.length ? expenses.map(e => buildExpenseItem(e, false)).join('') : '<div class="empty"><div class="big">🧾</div><p>暂无账目</p></div>';
@@ -625,14 +659,13 @@ function renderAdmin() {
 
   document.getElementById('a-expense-summary').innerHTML = `
     <div class="stat-card"><div class="label">总收入</div><div class="value" style="color:#34d399">${money(totalIncome)}</div></div>
-    <div class="stat-card"><div class="label">总支出</div><div class="value" style="color:#ff7ba3">${money(totalExpense)}</div></div>
+    <div class="stat-card"><div class="label">总支出</div><div class="value" style="color:#ff4d4d">${money(totalExpense)}</div></div>
     <div class="stat-card"><div class="label">当前结余</div><div class="value" style="color:#60a5fa">${money(balance)}</div></div>`;
 
   document.getElementById('a-timeline-list').innerHTML = events.length ? events.map(e => buildEventCard(e, true)).join('') : '<div class="empty">暂无记录</div>';
   document.getElementById('a-expense-list').innerHTML = expenses.length ? expenses.map(e => buildExpenseItem(e, true)).join('') : '<div class="empty">暂无账目</div>';
 }
 
-// 初始化时容错加载
 async function loadData() {
   try {
     const [ev, ex] = await Promise.all([ 
@@ -651,7 +684,6 @@ async function loadData() {
     await loadData();
     if (localStorage.getItem('sb_token')) isAdmin = true;
   } catch (err) {
-    // 如果网络超时，给提示，但依然渲染空页面
     console.warn(err.message);
     alert('数据加载失败：' + err.message + '\n可能是因为当前设备的网络无法直连数据库，请尝试切换网络或使用加速器。');
   }
