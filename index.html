@@ -31,7 +31,8 @@ body{
 .hero{position:relative;text-align:center;padding:62px 24px 50px;border-radius:26px;border:1px solid #1f232e;margin-bottom:44px;background:linear-gradient(180deg,#12141c,#0d0f16)}
 .hero h1{font-size:clamp(27px,5vw,44px);margin:16px 0 12px;background:linear-gradient(120deg,#ffffff 25%,#ffb3c9 55%,#c9a3ff 90%);-webkit-background-clip:text;color:transparent}
 .hero-stats{display:flex;justify-content:center;gap:46px;margin-top:36px;flex-wrap:wrap}
-.hero-stats b{display:block;font-size:25px;font-weight:800;background:linear-gradient(135deg,#ff5c8a,#a855f7);-webkit-background-clip:text;color:transparent}
+.hero-stats .item{text-align:center;min-width:70px}
+.hero-stats b{display:block;font-size:25px;font-weight:800;font-variant-numeric:tabular-nums}
 .hero-stats span{display:block;margin-top:5px;font-size:12px;color:#7d8299}
 .front-section{margin-bottom:56px}
 .section-head h2{font-size:19px;margin:0;letter-spacing:.5px}
@@ -49,17 +50,17 @@ body{
 .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px;margin-top:12px}
 .media-item{aspect-ratio:1;border-radius:10px;overflow:hidden;background:#0e1017;cursor:zoom-in;position:relative}
 .media-item img,.media-item video{width:100%;height:100%;object-fit:cover}
-.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:18px}
 .stat-card{background:#161924;border:1px solid #222633;border-radius:15px;padding:15px 18px}
 .stat-card .label{font-size:12.5px;color:#8b90a6}
-.stat-card .value{font-size:23px;font-weight:800;margin-top:6px}
+.stat-card .value{font-size:22px;font-weight:800;margin-top:6px}
 .cat-chart{background:#13151d;border:1px solid #1f232e;border-radius:15px;padding:16px 18px;margin-bottom:18px}
 .ex-item{display:flex;align-items:center;gap:14px;background:#13151d;border:1px solid #1f232e;border-radius:13px;padding:13px 16px;margin-bottom:9px}
 .ex-date{font-size:11.5px;color:#7d8299;background:#1a1d27;padding:5px 9px;border-radius:8px}
 .ex-main{flex:1}
-.ex-title{font-size:14px;font-weight:600}
+.ex-title{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .ex-note{font-size:12.5px;color:#7d8299;margin-top:3px}
-.ex-amount{font-size:15.5px;font-weight:700;color:#ff7ba3}
+.ex-amount{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
 .admin-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:18px;padding:12px 24px;background:rgba(10,11,16,.86);border-bottom:1px solid #1c1f29}
 .tabs{display:flex;gap:4px;background:#141620;padding:4px;border-radius:12px}
 .tab{background:transparent;border:none;color:#8b90a6;padding:8px 15px;border-radius:9px;font-size:13.5px;font-weight:600}
@@ -77,7 +78,9 @@ body{
 .field>span{font-size:12.5px;color:#8b90a6;font-weight:600}
 .field input,.field select,.field textarea{background:#0e1017;border:1px solid #242836;border-radius:10px;padding:11px 13px;color:#e9eaf2;font-size:13.5px;outline:none;width:100%}
 .row{display:flex;gap:14px}
-.pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:rgba(168,85,247,.16);color:#c9a3ff}
+.pill{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px}
+.pill.income{background:rgba(52,211,153,.16);color:#34d399;border:1px solid rgba(52,211,153,.3)}
+.pill.expense{background:rgba(255,92,138,.16);color:#ff7ba3;border:1px solid rgba(255,92,138,.3)}
 .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:300;display:none;align-items:center;justify-content:center;padding:28px}
 .lightbox.open{display:flex}
 .lightbox img,.lightbox video{max-width:100%;max-height:100%}
@@ -87,10 +90,7 @@ body{
 .pv-item img,.pv-item video{width:100%;height:100%;object-fit:cover;display:block}
 .pv-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.75);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10}
 .dropzone{border:1.5px dashed #2c3140;border-radius:12px;padding:20px;text-align:center;color:#6b7089;font-size:13px;cursor:pointer;display:block;position:relative; overflow:hidden;}
-/* 将 input 设为透明覆盖整个区域 */
-.dropzone input[type="file"] {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 100px;
-}
+.dropzone input[type="file"] {position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 100px;}
 .front-footer{text-align:center;padding:30px 20px 46px;color:#5a5f74;font-size:12.5px;border-top:1px solid #161a23}
 </style>
 </head>
@@ -115,7 +115,7 @@ body{
     <div class="brand"><div class="logo">⚙</div><div class="brand-name">站子后台</div></div>
     <nav class="tabs">
       <button class="tab active" data-atab="timeline">🕒 活动管理</button>
-      <button class="tab" data-atab="expense">💰 支出管理</button>
+      <button class="tab" data-atab="expense">💰 收支管理</button>
       <button class="tab" data-atab="settings">⚙ 设置</button>
     </nav>
     <div class="top-actions">
@@ -175,14 +175,25 @@ body{
 
 <div class="modal" id="modal-expense">
   <div class="modal-box" style="max-width:540px">
-    <div class="modal-head"><h2>支出记录</h2><button class="icon-btn" id="btn-close-expense">✕</button></div>
+    <div class="modal-head"><h2>收支记录</h2><button class="icon-btn" id="btn-close-expense">✕</button></div>
     <div class="modal-body">
       <div class="row">
+        <label class="field"><span>类型</span>
+          <select id="ex-type">
+            <option value="expense">💸 支出</option>
+            <option value="income">💰 收入</option>
+          </select>
+        </label>
         <label class="field"><span>日期</span><input type="date" id="ex-date"></label>
-        <label class="field"><span>金额（元）</span><input type="number" id="ex-amount" min="0" step="0.01"></label>
       </div>
-      <label class="field"><span>支出项目</span><input type="text" id="ex-title"></label>
-      <label class="field"><span>分类</span><input type="text" id="ex-cat" list="cat-options"><datalist id="cat-options"><option value="应援物"></option><option value="广告投放"></option><option value="集资"></option><option value="其他"></option></datalist></label>
+      <div class="row">
+        <label class="field"><span>金额（元）</span><input type="number" id="ex-amount" min="0" step="0.01"></label>
+        <label class="field"><span>分类</span><input type="text" id="ex-cat" list="cat-options"></label>
+      </div>
+      <datalist id="cat-options">
+        <option value="应援物"></option><option value="广告投放"></option><option value="集资"></option><option value="赞助"></option><option value="其他"></option>
+      </datalist>
+      <label class="field"><span>项目名称</span><input type="text" id="ex-title"></label>
       <label class="field"><span>备注</span><textarea id="ex-note" rows="2"></textarea></label>
       <div class="field">
         <span>凭证截图（可选）</span>
@@ -281,7 +292,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.a-panel').forEach(p => p.classList.toggle('active', p.id === 'a-panel-' + currentAdminTab));
     const btnAdd = document.getElementById('btn-add');
     btnAdd.hidden = currentAdminTab === 'settings';
-    btnAdd.textContent = currentAdminTab === 'timeline' ? '+ 新建活动' : '+ 记一笔支出';
+    btnAdd.textContent = currentAdminTab === 'timeline' ? '+ 新建活动' : '+ 记一笔账';
   };
 });
 
@@ -428,6 +439,7 @@ function openExpenseModal(id) {
   editExId = id;
   window.pendingExMedia = [];
   const e = id ? expenses.find(x => x.id === id) : null;
+  document.getElementById('ex-type').value = e ? (e.type || 'expense') : 'expense';
   document.getElementById('ex-date').value = e ? e.date : todayStr();
   document.getElementById('ex-amount').value = e ? e.amount : '';
   document.getElementById('ex-title').value = e ? e.title : '';
@@ -462,8 +474,9 @@ document.getElementById('ev-save').onclick = async function() {
 document.getElementById('ex-save').onclick = async function() {
   const title = document.getElementById('ex-title').value.trim();
   const amount = Number(document.getElementById('ex-amount').value);
-  if (!title) return alert('请输入支出项目');
-  if (!(amount > 0)) return alert('金额不正确');
+  if (!title) return alert('请输入项目名称');
+  if (!(amount > 0)) return alert('金额必须大于0');
+  
   const btn = this;
   btn.textContent = '保存中...';
   try {
@@ -474,7 +487,15 @@ document.getElementById('ex-save').onclick = async function() {
         receiptsToSave.push({ url, type: m.type, name: m.name });
       } else { receiptsToSave.push(m); }
     }
-    const rec = { date: document.getElementById('ex-date').value, amount, title, category: document.getElementById('ex-cat').value || '未分类', note: document.getElementById('ex-note').value, receipts: receiptsToSave };
+    const rec = { 
+      type: document.getElementById('ex-type').value,
+      date: document.getElementById('ex-date').value, 
+      amount, 
+      title, 
+      category: document.getElementById('ex-cat').value || '未分类', 
+      note: document.getElementById('ex-note').value, 
+      receipts: receiptsToSave 
+    };
     if(editExId) rec.id = editExId;
     await api('/rest/v1/expenses', 'POST', rec);
     document.getElementById('modal-expense').classList.remove('open');
@@ -509,11 +530,22 @@ function buildEventCard(e, isAdmin) {
 
 function buildExpenseItem(e, isAdmin) {
   const dt = parseDate(e.date);
+  const isIncome = e.type === 'income';
+  const typePill = isIncome 
+    ? `<span class="pill income">收入</span>` 
+    : `<span class="pill expense">支出</span>`;
+  const amountHTML = isIncome 
+    ? `<div class="ex-amount" style="color:#34d399">+${money(e.amount)}</div>`
+    : `<div class="ex-amount" style="color:#ff7ba3">-${money(e.amount)}</div>`;
+
   return `
     <div class="ex-item">
       <div class="ex-date">${String(dt.getMonth() + 1).padStart(2, '0')}/${String(dt.getDate()).padStart(2, '0')}</div>
-      <div class="ex-main"><div class="ex-title">${esc(e.title)}</div>${e.note ? `<div class="ex-note">${esc(e.note)}</div>` : ''}</div>
-      <div class="ex-amount">${money(e.amount)}</div>
+      <div class="ex-main">
+        <div class="ex-title">${esc(e.title)} ${typePill} <span style="font-size:11px;color:#7d8299;font-weight:normal">${esc(e.category || '未分类')}</span></div>
+        ${e.note ? `<div class="ex-note">${esc(e.note)}</div>` : ''}
+      </div>
+      ${amountHTML}
       ${isAdmin ? `<div><button class="icon-btn" onclick="openExpenseModal('${e.id}')">✏️</button><button class="icon-btn" onclick="delExpense('${e.id}')">🗑️</button></div>` : ''}
     </div>`;
 }
@@ -525,7 +557,7 @@ window.delEvent = async function(id) {
 };
 
 window.delExpense = async function(id) {
-  if(!confirm('确定删除这笔支出吗？')) return;
+  if(!confirm('确定删除这笔账吗？')) return;
   await api(`/rest/v1/expenses?id=eq.${id}`, 'DELETE');
   await loadData(); renderAdmin();
 };
@@ -540,16 +572,39 @@ window.showLightbox = function(url, type) {
 
 function renderFront() {
   document.getElementById('f-year').textContent = new Date().getFullYear();
-  const stTotal = expenses.reduce((s, e) => s + Number(e.amount || 0), 0);
-  document.getElementById('f-hero-stats').innerHTML = `<div class="item"><b>${events.length}</b><span>活动记录</span></div><div class="item"><b>${expenses.length}</b><span>支出笔数</span></div><div class="item"><b>${shortMoney(stTotal)}</b><span>应援总额</span></div>`;
+  
+  const totalIncome = expenses.filter(e => e.type === 'income').reduce((s, e) => s + Number(e.amount || 0), 0);
+  const totalExpense = expenses.filter(e => e.type !== 'income').reduce((s, e) => s + Number(e.amount || 0), 0);
+  const balance = totalIncome - totalExpense;
+
+  document.getElementById('f-hero-stats').innerHTML = `
+    <div class="item"><b>${events.length}</b><span>活动记录</span></div>
+    <div class="item"><b style="color:#34d399">${shortMoney(totalIncome)}</b><span>总收入</span></div>
+    <div class="item"><b style="color:#ff7ba3">${shortMoney(totalExpense)}</b><span>总支出</span></div>
+    <div class="item"><b style="color:#60a5fa">${shortMoney(balance)}</b><span>结余</span></div>`;
+
   document.getElementById('f-timeline-list').innerHTML = events.length ? events.map(e => buildEventCard(e, false)).join('') : '<div class="empty"><div class="big">🕊️</div><p>暂无记录</p></div>';
-  document.getElementById('f-expense-summary').innerHTML = `<div class="stat-card"><div class="label">总支出</div><div class="value">${money(stTotal)}</div></div>`;
-  document.getElementById('f-expense-list').innerHTML = expenses.length ? expenses.map(e => buildExpenseItem(e, false)).join('') : '<div class="empty"><div class="big">🧾</div><p>暂无支出</p></div>';
+  
+  document.getElementById('f-expense-summary').innerHTML = `
+    <div class="stat-card"><div class="label">总收入</div><div class="value" style="color:#34d399">${money(totalIncome)}</div></div>
+    <div class="stat-card"><div class="label">总支出</div><div class="value" style="color:#ff7ba3">${money(totalExpense)}</div></div>
+    <div class="stat-card"><div class="label">当前结余</div><div class="value" style="color:#60a5fa">${money(balance)}</div></div>`;
+
+  document.getElementById('f-expense-list').innerHTML = expenses.length ? expenses.map(e => buildExpenseItem(e, false)).join('') : '<div class="empty"><div class="big">🧾</div><p>暂无账目</p></div>';
 }
 
 function renderAdmin() {
+  const totalIncome = expenses.filter(e => e.type === 'income').reduce((s, e) => s + Number(e.amount || 0), 0);
+  const totalExpense = expenses.filter(e => e.type !== 'income').reduce((s, e) => s + Number(e.amount || 0), 0);
+  const balance = totalIncome - totalExpense;
+
+  document.getElementById('a-expense-summary').innerHTML = `
+    <div class="stat-card"><div class="label">总收入</div><div class="value" style="color:#34d399">${money(totalIncome)}</div></div>
+    <div class="stat-card"><div class="label">总支出</div><div class="value" style="color:#ff7ba3">${money(totalExpense)}</div></div>
+    <div class="stat-card"><div class="label">当前结余</div><div class="value" style="color:#60a5fa">${money(balance)}</div></div>`;
+
   document.getElementById('a-timeline-list').innerHTML = events.length ? events.map(e => buildEventCard(e, true)).join('') : '<div class="empty">暂无记录</div>';
-  document.getElementById('a-expense-list').innerHTML = expenses.length ? expenses.map(e => buildExpenseItem(e, true)).join('') : '<div class="empty">暂无支出</div>';
+  document.getElementById('a-expense-list').innerHTML = expenses.length ? expenses.map(e => buildExpenseItem(e, true)).join('') : '<div class="empty">暂无账目</div>';
 }
 
 async function loadData() {
