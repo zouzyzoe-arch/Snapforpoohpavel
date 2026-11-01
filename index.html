@@ -47,7 +47,7 @@ body{
 .ev-desc{font-size:13.5px;color:#a2a7ba;line-height:1.75;margin:8px 0 0}
 .ev-tags span{font-size:11.5px;color:#8b90a6;background:#1a1d27;padding:3px 9px;border-radius:8px;margin-right:5px}
 .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:8px;margin-top:12px}
-.media-item{aspect-ratio:1;border-radius:10px;overflow:hidden;background:#0e1017;cursor:zoom-in}
+.media-item{aspect-ratio:1;border-radius:10px;overflow:hidden;background:#0e1017;cursor:zoom-in;position:relative}
 .media-item img,.media-item video{width:100%;height:100%;object-fit:cover}
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
 .stat-card{background:#161924;border:1px solid #222633;border-radius:15px;padding:15px 18px}
@@ -94,21 +94,12 @@ body{
 
 <div id="front-app">
   <header class="front-header">
-    <div class="brand">
-      <div class="logo">★</div>
-      <div>
-        <div class="brand-name" id="f-site-name">Snapforpoohpavel</div>
-        <div class="brand-sub">记录每一次心动瞬间</div>
-      </div>
-    </div>
+    <div class="brand"><div class="logo">★</div><div><div class="brand-name" id="f-site-name">Snapforpoohpavel</div><div class="brand-sub">记录每一次心动瞬间</div></div></div>
     <nav class="front-nav"><a href="#f-timeline">活动时间线</a><a href="#f-expense">应援账本</a></nav>
     <button class="btn ghost" onclick="tryOpenLogin()">🔒 管理入口</button>
   </header>
   <main class="front-main">
-    <section class="hero">
-      <h1 id="f-hero-name">Snapforpoohpavel</h1>
-      <div class="hero-stats" id="f-hero-stats"></div>
-    </section>
+    <section class="hero"><h1 id="f-hero-name">Snapforpoohpavel</h1><div class="hero-stats" id="f-hero-stats"></div></section>
     <section id="f-timeline" class="front-section"><div class="section-head"><h2>活动时间线</h2></div><div id="f-timeline-list"></div></section>
     <section id="f-expense" class="front-section"><div class="section-head"><h2>应援账本公示</h2></div><div class="summary" id="f-expense-summary"></div><div id="f-expense-list"></div></section>
   </main>
@@ -311,7 +302,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 
 window.handleEventFiles = function(files) {
   for(const f of files) {
-    if(f.size > 50 * 1024 * 1024) { alert('文件超过50MB，请压缩'); continue; }
+    if(f.size > 50 * 1024 * 1024) { alert('文件超过50MB，请压缩后再试'); continue; }
     window.pendingEvMedia.push({ file: f, type: f.type.startsWith('video') ? 'video' : 'image', name: f.name });
   }
   renderPreviews();
@@ -340,9 +331,12 @@ function renderPreviews() {
   evBox.innerHTML = '';
   window.pendingEvMedia.forEach((m, i) => {
     const url = m.file ? URL.createObjectURL(m.file) : m.url;
+    const isVideo = m.type === 'video' || (m.file && m.file.type.startsWith('video/'));
     const div = document.createElement('div');
     div.className = 'pv-item';
-    div.innerHTML = `<img src="${url}"><button type="button" class="pv-del" onclick="removeEvMedia(${i})">✕</button>`;
+    div.innerHTML = isVideo 
+      ? `<video src="${url}" muted></video><button type="button" class="pv-del" onclick="removeEvMedia(${i})">✕</button>`
+      : `<img src="${url}"><button type="button" class="pv-del" onclick="removeEvMedia(${i})">✕</button>`;
     evBox.appendChild(div);
   });
 
@@ -359,21 +353,38 @@ function renderPreviews() {
 
 async function uploadFile(file) {
   const bucket = file.type.startsWith('video/') ? 'videos' : 'photos';
-  const ext = file.name.split('.').pop();
+  const ext = file.name.split('.').pop() || 'bin';
   const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
   const token = localStorage.getItem('sb_token');
+  
   const res = await fetch(`${URL}/storage/v1/object/${bucket}/${path}`, {
     method: 'POST',
-    headers: { 'apikey': KEY, 'Authorization': `Bearer ${token}` },
+    headers: { 
+      'apikey': KEY, 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': file.type || 'application/octet-stream'
+    },
     body: file
   });
-  if (!res.ok) throw new Error('上传失败，请检查网络或桶权限');
+  
+  if (!res.ok) {
+    const errorText = await res.text();
+    if (res.status === 413) throw new Error('文件太大！Supabase 免费版限制单个文件最大 50MB，请压缩视频。');
+    throw new Error(`上传失败(${res.status})：${errorText}`);
+  }
   return `${URL}/storage/v1/object/public/${bucket}/${path}`;
 }
 
 function buildEventCard(e, isAdmin) {
   const dt = parseDate(e.date);
-  const mediaHTML = e.media && e.media.length ? `<div class="media-grid">${e.media.map(m => `<div class="media-item" onclick="showLightbox('${m.url}', '${m.type}')"><img src="${m.url}"></div>`).join('')}</div>` : '';
+  const mediaHTML = e.media && e.media.length ? `<div class="media-grid">${e.media.map(m => {
+    const isVideo = m.type === 'video';
+    const mediaTag = isVideo 
+      ? `<video src="${m.url}" muted></video><div style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px">▶ 视频</div>` 
+      : `<img src="${m.url}">`;
+    return `<div class="media-item" onclick="showLightbox('${m.url}', '${m.type}')">${mediaTag}</div>`;
+  }).join('')}</div>` : '';
+  
   return `
     <article class="ev-card">
       <div class="ev-side"><div class="ev-day">${String(dt.getDate()).padStart(2, '0')}</div><div class="ev-mon">${String(dt.getMonth() + 1).padStart(2, '0')} 月</div></div>
@@ -415,7 +426,9 @@ function renderAdmin() {
 
 function showLightbox(url, type) {
   const lb = document.getElementById('lightbox');
-  lb.innerHTML = type === 'video' ? `<video src="${url}" controls autoplay></video>` : `<img src="${url}">`;
+  lb.innerHTML = type === 'video' 
+    ? `<video src="${url}" controls autoplay playsinline></video>` 
+    : `<img src="${url}">`;
   lb.classList.add('open');
 }
 
