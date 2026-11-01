@@ -85,8 +85,8 @@ body{
 .media-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:10px}
 .pv-item{aspect-ratio:1;border-radius:9px;overflow:hidden;background:#0e1017;position:relative;border:1px solid #242836}
 .pv-item img,.pv-item video{width:100%;height:100%;object-fit:cover;display:block}
-.pv-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.75);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.dropzone{border:1.5px dashed #2c3140;border-radius:12px;padding:20px;text-align:center;color:#6b7089;font-size:13px;cursor:pointer}
+.pv-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.75);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10}
+.dropzone{border:1.5px dashed #2c3140;border-radius:12px;padding:20px;text-align:center;color:#6b7089;font-size:13px;cursor:pointer;display:block}
 .front-footer{text-align:center;padding:30px 20px 46px;color:#5a5f74;font-size:12.5px;border-top:1px solid #161a23}
 </style>
 </head>
@@ -96,7 +96,7 @@ body{
   <header class="front-header">
     <div class="brand"><div class="logo">★</div><div><div class="brand-name" id="f-site-name">Snapforpoohpavel</div><div class="brand-sub">记录每一次心动瞬间</div></div></div>
     <nav class="front-nav"><a href="#f-timeline">活动时间线</a><a href="#f-expense">应援账本</a></nav>
-    <button class="btn ghost" onclick="tryOpenLogin()">🔒 管理入口</button>
+    <button class="btn ghost" id="btn-open-login">🔒 管理入口</button>
   </header>
   <main class="front-main">
     <section class="hero"><h1 id="f-hero-name">Snapforpoohpavel</h1><div class="hero-stats" id="f-hero-stats"></div></section>
@@ -115,8 +115,8 @@ body{
       <button class="tab" data-atab="settings">⚙ 设置</button>
     </nav>
     <div class="top-actions">
-      <button class="btn ghost" onclick="showFront()">查看前台</button>
-      <button class="btn primary" id="btn-add" onclick="addBtnClick()">+ 新建活动</button>
+      <button class="btn ghost" id="btn-show-front">查看前台</button>
+      <button class="btn primary" id="btn-add">+ 新建活动</button>
     </div>
   </header>
   <main class="admin-main">
@@ -124,7 +124,7 @@ body{
     <section id="a-panel-expense" class="a-panel"><div class="summary" id="a-expense-summary"></div><div id="a-expense-list"></div></section>
     <section id="a-panel-settings" class="a-panel">
       <div style="background:#13151d;border:1px solid #1f232e;border-radius:16px;padding:20px;max-width:400px">
-        <h3>退出登录</h3><button class="btn danger" onclick="logout()" style="margin-top:10px">退出登录</button>
+        <h3>退出登录</h3><button class="btn danger" id="btn-logout" style="margin-top:10px">退出登录</button>
       </div>
     </section>
   </main>
@@ -132,22 +132,22 @@ body{
 
 <div class="modal" id="modal-login">
   <div class="modal-box" style="max-width:390px">
-    <div class="modal-head"><h2>管理登录</h2><button class="icon-btn" onclick="document.getElementById('modal-login').classList.remove('open')">✕</button></div>
+    <div class="modal-head"><h2>管理登录</h2><button class="icon-btn" id="btn-close-login">✕</button></div>
     <div class="modal-body">
       <label class="field"><span>管理员邮箱</span><input type="email" id="login-email" placeholder="输入邮箱"></label>
       <label class="field"><span>密码</span><input type="password" id="login-pwd" placeholder="输入密码"></label>
       <p id="login-hint" style="color:#ff7ba3;font-size:12px;margin:0"></p>
     </div>
     <div class="modal-foot">
-      <button class="btn ghost" onclick="document.getElementById('modal-login').classList.remove('open')">取消</button>
-      <button class="btn primary" id="login-submit" onclick="doLogin()">进入后台</button>
+      <button class="btn ghost" id="btn-cancel-login">取消</button>
+      <button class="btn primary" id="login-submit">进入后台</button>
     </div>
   </div>
 </div>
 
 <div class="modal" id="modal-event">
   <div class="modal-box">
-    <div class="modal-head"><h2>活动记录</h2><button class="icon-btn" onclick="document.getElementById('modal-event').classList.remove('open')">✕</button></div>
+    <div class="modal-head"><h2>活动记录</h2><button class="icon-btn" id="btn-close-event">✕</button></div>
     <div class="modal-body">
       <div class="row">
         <label class="field"><span>日期</span><input type="date" id="ev-date"></label>
@@ -158,20 +158,20 @@ body{
       <label class="field"><span>标签</span><input type="text" id="ev-tags" placeholder="舞台, 饭拍"></label>
       <div class="field">
         <span>图片 / 视频</span>
-        <div class="dropzone" onclick="document.getElementById('ev-files').click()">
-          <input type="file" id="ev-files" accept="image/*,video/*" multiple hidden onchange="handleEventFiles(this.files)">
-          <div id="ev-drop-text">点击上传</div>
-        </div>
+        <label class="dropzone" for="ev-files">
+          <div>点击这里选择照片/视频</div>
+        </label>
+        <input type="file" id="ev-files" accept="image/*,video/*" multiple style="display:none">
         <div class="media-preview" id="ev-preview"></div>
       </div>
     </div>
-    <div class="modal-foot"><button class="btn ghost" onclick="document.getElementById('modal-event').classList.remove('open')">取消</button><button class="btn primary" id="ev-save" onclick="saveEvent()">保存</button></div>
+    <div class="modal-foot"><button class="btn ghost" id="btn-cancel-event">取消</button><button class="btn primary" id="ev-save">保存</button></div>
   </div>
 </div>
 
 <div class="modal" id="modal-expense">
   <div class="modal-box" style="max-width:540px">
-    <div class="modal-head"><h2>支出记录</h2><button class="icon-btn" onclick="document.getElementById('modal-expense').classList.remove('open')">✕</button></div>
+    <div class="modal-head"><h2>支出记录</h2><button class="icon-btn" id="btn-close-expense">✕</button></div>
     <div class="modal-body">
       <div class="row">
         <label class="field"><span>日期</span><input type="date" id="ex-date"></label>
@@ -182,20 +182,26 @@ body{
       <label class="field"><span>备注</span><textarea id="ex-note" rows="2"></textarea></label>
       <div class="field">
         <span>凭证截图（可选）</span>
-        <div class="dropzone" onclick="document.getElementById('ex-files').click()">
-          <input type="file" id="ex-files" accept="image/*" multiple hidden onchange="handleExpenseFiles(this.files)">
-          <div id="ex-drop-text">点击上传</div>
-        </div>
+        <label class="dropzone" for="ex-files">
+          <div>点击这里选择截图</div>
+        </label>
+        <input type="file" id="ex-files" accept="image/*" multiple style="display:none">
         <div class="media-preview" id="ex-preview"></div>
       </div>
     </div>
-    <div class="modal-foot"><button class="btn ghost" onclick="document.getElementById('modal-expense').classList.remove('open')">取消</button><button class="btn primary" id="ex-save" onclick="saveExpense()">保存</button></div>
+    <div class="modal-foot"><button class="btn ghost" id="btn-cancel-expense">取消</button><button class="btn primary" id="ex-save">保存</button></div>
   </div>
 </div>
 
-<div class="lightbox" id="lightbox" onclick="this.classList.remove('open');this.innerHTML=''"></div>
+<div class="lightbox" id="lightbox"></div>
 
 <script>
+// 全局报错拦截，防止按了没反应
+window.onerror = function(msg) {
+  alert("页面发生错误: " + msg);
+  return false;
+};
+
 const URL = 'https://jhdmotgxxetvdjslgiek.supabase.co';
 const KEY = 'sb_publishable_9XIghyqF1T6N0SwR75Ml7w_UKnRXEPm';
 
@@ -223,7 +229,30 @@ async function api(path, method = 'GET', body = null) {
   return null;
 }
 
-function tryOpenLogin() {
+const parseDate = s => { const [y, m, d] = String(s || '').split('-').map(Number); return new Date(y || 1970, (m || 1) - 1, d || 1); };
+const todayStr = () => new Date().toISOString().split('T')[0];
+const money = n => '¥' + Number(n || 0).toLocaleString('zh-CN', { minimumFractionDigits: 2 });
+const shortMoney = n => '¥' + (n >= 10000 ? (n / 10000).toFixed(1) + '万' : Number(n||0).toLocaleString());
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// ============== 界面控制 ==============
+function showFront() {
+  document.getElementById('front-app').hidden = false;
+  document.getElementById('admin-app').hidden = true;
+  renderFront();
+  window.scrollTo(0, 0);
+}
+
+function showAdmin() {
+  if (!isAdmin) return;
+  document.getElementById('front-app').hidden = true;
+  document.getElementById('admin-app').hidden = false;
+  renderAdmin();
+  window.scrollTo(0, 0);
+}
+
+document.getElementById('btn-show-front').onclick = showFront;
+document.getElementById('btn-open-login').onclick = () => {
   if (localStorage.getItem('sb_token')) { isAdmin = true; showAdmin(); }
   else {
     document.getElementById('login-email').value = '';
@@ -231,9 +260,38 @@ function tryOpenLogin() {
     document.getElementById('login-hint').textContent = '';
     document.getElementById('modal-login').classList.add('open');
   }
-}
+};
 
-async function doLogin() {
+document.getElementById('btn-close-login').onclick = () => document.getElementById('modal-login').classList.remove('open');
+document.getElementById('btn-cancel-login').onclick = () => document.getElementById('modal-login').classList.remove('open');
+document.getElementById('btn-close-event').onclick = () => document.getElementById('modal-event').classList.remove('open');
+document.getElementById('btn-cancel-event').onclick = () => document.getElementById('modal-event').classList.remove('open');
+document.getElementById('btn-close-expense').onclick = () => document.getElementById('modal-expense').classList.remove('open');
+document.getElementById('btn-cancel-expense').onclick = () => document.getElementById('modal-expense').classList.remove('open');
+
+document.getElementById('lightbox').onclick = () => {
+  document.getElementById('lightbox').classList.remove('open');
+  document.getElementById('lightbox').innerHTML = '';
+};
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.onclick = () => {
+    currentAdminTab = tab.dataset.atab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
+    document.querySelectorAll('.a-panel').forEach(p => p.classList.toggle('active', p.id === 'a-panel-' + currentAdminTab));
+    const btnAdd = document.getElementById('btn-add');
+    btnAdd.hidden = currentAdminTab === 'settings';
+    btnAdd.textContent = currentAdminTab === 'timeline' ? '+ 新建活动' : '+ 记一笔支出';
+  };
+});
+
+document.getElementById('btn-add').onclick = () => {
+  if (currentAdminTab === 'timeline') openEventModal(null);
+  else if (currentAdminTab === 'expense') openExpenseModal(null);
+};
+
+// ============== 登录/登出 ==============
+document.getElementById('login-submit').onclick = async () => {
   const email = document.getElementById('login-email').value.trim();
   const pwd = document.getElementById('login-pwd').value;
   if (!email || !pwd) return;
@@ -256,64 +314,33 @@ async function doLogin() {
   } finally {
     btn.textContent = '进入后台';
   }
-}
+};
 
-function logout() {
+document.getElementById('btn-logout').onclick = () => {
   localStorage.removeItem('sb_token');
   isAdmin = false;
   showFront();
-}
+};
 
-function showFront() {
-  document.getElementById('front-app').hidden = false;
-  document.getElementById('admin-app').hidden = true;
-  renderFront();
-  window.scrollTo(0, 0);
-}
-
-function showAdmin() {
-  if (!isAdmin) return;
-  document.getElementById('front-app').hidden = true;
-  document.getElementById('admin-app').hidden = false;
-  renderAdmin();
-  window.scrollTo(0, 0);
-}
-
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.onclick = () => {
-    currentAdminTab = tab.dataset.atab;
-    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
-    document.querySelectorAll('.a-panel').forEach(p => p.classList.toggle('active', p.id === 'a-panel-' + currentAdminTab));
-    document.getElementById('btn-add').hidden = currentAdminTab === 'settings';
-    document.getElementById('btn-add').textContent = currentAdminTab === 'timeline' ? '+ 新建活动' : '+ 记一笔支出';
-  };
-});
-
-function addBtnClick() {
-  if (currentAdminTab === 'timeline') openEventModal(null);
-  else if (currentAdminTab === 'expense') openExpenseModal(null);
-}
-
-const parseDate = s => { const [y, m, d] = String(s || '').split('-').map(Number); return new Date(y || 1970, (m || 1) - 1, d || 1); };
-const todayStr = () => new Date().toISOString().split('T')[0];
-const money = n => '¥' + Number(n || 0).toLocaleString('zh-CN', { minimumFractionDigits: 2 });
-const shortMoney = n => '¥' + (n >= 10000 ? (n / 10000).toFixed(1) + '万' : Number(n||0).toLocaleString());
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-
-window.handleEventFiles = function(files) {
-  for(const f of files) {
-    if(f.size > 50 * 1024 * 1024) { alert('文件超过50MB，请压缩后再试'); continue; }
+// ============== 文件上传及预览 ==============
+document.getElementById('ev-files').onchange = function() {
+  if (!this.files || this.files.length === 0) return;
+  for(const f of this.files) {
+    if(f.size > 50 * 1024 * 1024) { alert(`文件 "${f.name}" 超过50MB，请压缩`); continue; }
     window.pendingEvMedia.push({ file: f, type: f.type.startsWith('video') ? 'video' : 'image', name: f.name });
   }
+  this.value = ''; // 允许重复选
   renderPreviews();
 };
 
-window.handleExpenseFiles = function(files) {
-  for(const f of files) {
+document.getElementById('ex-files').onchange = function() {
+  if (!this.files || this.files.length === 0) return;
+  for(const f of this.files) {
     if(!f.type.startsWith('image/')) continue;
-    if(f.size > 50 * 1024 * 1024) { alert('图片超过50MB，请压缩'); continue; }
+    if(f.size > 50 * 1024 * 1024) { alert(`图片 "${f.name}" 超过50MB，请压缩`); continue; }
     window.pendingExMedia.push({ file: f, type: 'image', name: f.name });
   }
+  this.value = '';
   renderPreviews();
 };
 
@@ -331,23 +358,38 @@ function renderPreviews() {
   evBox.innerHTML = '';
   window.pendingEvMedia.forEach((m, i) => {
     const url = m.file ? URL.createObjectURL(m.file) : m.url;
-    const isVideo = m.type === 'video' || (m.file && m.file.type.startsWith('video/'));
-    const div = document.createElement('div');
-    div.className = 'pv-item';
-    div.innerHTML = isVideo 
-      ? `<video src="${url}" muted></video><button type="button" class="pv-del" onclick="removeEvMedia(${i})">✕</button>`
-      : `<img src="${url}"><button type="button" class="pv-del" onclick="removeEvMedia(${i})">✕</button>`;
-    evBox.appendChild(div);
+    const pv = document.createElement('div');
+    pv.className = 'pv-item';
+    if (m.type === 'video') {
+      const v = document.createElement('video');
+      v.src = url; v.muted = true; v.playsInline = true;
+      pv.appendChild(v);
+    } else {
+      const img = document.createElement('img');
+      img.src = url;
+      pv.appendChild(img);
+    }
+    const btn = document.createElement('button');
+    btn.className = 'pv-del'; btn.textContent = '✕'; btn.type = 'button';
+    btn.onclick = () => removeEvMedia(i);
+    pv.appendChild(btn);
+    evBox.appendChild(pv);
   });
 
   const exBox = document.getElementById('ex-preview'); 
   exBox.innerHTML = '';
   window.pendingExMedia.forEach((m, i) => {
     const url = m.file ? URL.createObjectURL(m.file) : m.url;
-    const div = document.createElement('div');
-    div.className = 'pv-item';
-    div.innerHTML = `<img src="${url}"><button type="button" class="pv-del" onclick="removeExMedia(${i})">✕</button>`;
-    exBox.appendChild(div);
+    const pv = document.createElement('div');
+    pv.className = 'pv-item';
+    const img = document.createElement('img');
+    img.src = url;
+    pv.appendChild(img);
+    const btn = document.createElement('button');
+    btn.className = 'pv-del'; btn.textContent = '✕'; btn.type = 'button';
+    btn.onclick = () => removeExMedia(i);
+    pv.appendChild(btn);
+    exBox.appendChild(pv);
   });
 }
 
@@ -356,25 +398,91 @@ async function uploadFile(file) {
   const ext = file.name.split('.').pop() || 'bin';
   const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
   const token = localStorage.getItem('sb_token');
-  
   const res = await fetch(`${URL}/storage/v1/object/${bucket}/${path}`, {
     method: 'POST',
-    headers: { 
-      'apikey': KEY, 
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': file.type || 'application/octet-stream'
-    },
+    headers: { 'apikey': KEY, 'Authorization': `Bearer ${token}`, 'Content-Type': file.type || 'application/octet-stream' },
     body: file
   });
-  
   if (!res.ok) {
-    const errorText = await res.text();
-    if (res.status === 413) throw new Error('文件太大！Supabase 免费版限制单个文件最大 50MB，请压缩视频。');
-    throw new Error(`上传失败(${res.status})：${errorText}`);
+    if (res.status === 413) throw new Error('文件太大！免费版限制 50MB。');
+    throw new Error(`上传失败(${res.status})`);
   }
   return `${URL}/storage/v1/object/public/${bucket}/${path}`;
 }
 
+// ============== 表单弹窗及保存 ==============
+function openEventModal(id) {
+  editEvId = id;
+  window.pendingEvMedia = [];
+  const e = id ? events.find(x => x.id === id) : null;
+  document.getElementById('ev-date').value = e ? e.date : todayStr();
+  document.getElementById('ev-title').value = e ? e.title : '';
+  document.getElementById('ev-desc').value = e ? e.desc : '';
+  document.getElementById('ev-tags').value = e ? (e.tags || []).join(',') : '';
+  if(e && e.media) window.pendingEvMedia = [...e.media];
+  renderPreviews();
+  document.getElementById('modal-event').classList.add('open');
+}
+
+function openExpenseModal(id) {
+  editExId = id;
+  window.pendingExMedia = [];
+  const e = id ? expenses.find(x => x.id === id) : null;
+  document.getElementById('ex-date').value = e ? e.date : todayStr();
+  document.getElementById('ex-amount').value = e ? e.amount : '';
+  document.getElementById('ex-title').value = e ? e.title : '';
+  document.getElementById('ex-cat').value = e ? e.category : '';
+  document.getElementById('ex-note').value = e ? e.note : '';
+  if(e && e.receipts) window.pendingExMedia = [...e.receipts];
+  renderPreviews();
+  document.getElementById('modal-expense').classList.add('open');
+}
+
+document.getElementById('ev-save').onclick = async function() {
+  const title = document.getElementById('ev-title').value.trim();
+  if (!title) return alert('请输入标题');
+  const btn = this;
+  btn.textContent = '保存中...';
+  try {
+    const mediaToSave = [];
+    for(const m of window.pendingEvMedia) {
+      if(m.file) {
+        const url = await uploadFile(m.file);
+        mediaToSave.push({ url, type: m.type, name: m.name });
+      } else { mediaToSave.push(m); }
+    }
+    const rec = { date: document.getElementById('ev-date').value, type: document.getElementById('ev-type').value, title, desc: document.getElementById('ev-desc').value, tags: document.getElementById('ev-tags').value.split(',').map(s=>s.trim()).filter(Boolean), media: mediaToSave };
+    if(editEvId) rec.id = editEvId;
+    await api('/rest/v1/events', 'POST', rec);
+    document.getElementById('modal-event').classList.remove('open');
+    await loadData(); renderAdmin();
+  } catch (err) { alert('保存失败: ' + err.message); } finally { btn.textContent = '保存'; }
+};
+
+document.getElementById('ex-save').onclick = async function() {
+  const title = document.getElementById('ex-title').value.trim();
+  const amount = Number(document.getElementById('ex-amount').value);
+  if (!title) return alert('请输入支出项目');
+  if (!(amount > 0)) return alert('金额不正确');
+  const btn = this;
+  btn.textContent = '保存中...';
+  try {
+    const receiptsToSave = [];
+    for(const m of window.pendingExMedia) {
+      if(m.file) {
+        const url = await uploadFile(m.file);
+        receiptsToSave.push({ url, type: m.type, name: m.name });
+      } else { receiptsToSave.push(m); }
+    }
+    const rec = { date: document.getElementById('ex-date').value, amount, title, category: document.getElementById('ex-cat').value || '未分类', note: document.getElementById('ex-note').value, receipts: receiptsToSave };
+    if(editExId) rec.id = editExId;
+    await api('/rest/v1/expenses', 'POST', rec);
+    document.getElementById('modal-expense').classList.remove('open');
+    await loadData(); renderAdmin();
+  } catch (err) { alert('保存失败: ' + err.message); } finally { btn.textContent = '保存'; }
+};
+
+// ============== 渲染逻辑 ==============
 function buildEventCard(e, isAdmin) {
   const dt = parseDate(e.date);
   const mediaHTML = e.media && e.media.length ? `<div class="media-grid">${e.media.map(m => {
@@ -410,6 +518,26 @@ function buildExpenseItem(e, isAdmin) {
     </div>`;
 }
 
+window.delEvent = async function(id) {
+  if(!confirm('确定删除这条记录吗？')) return;
+  await api(`/rest/v1/events?id=eq.${id}`, 'DELETE');
+  await loadData(); renderAdmin();
+};
+
+window.delExpense = async function(id) {
+  if(!confirm('确定删除这笔支出吗？')) return;
+  await api(`/rest/v1/expenses?id=eq.${id}`, 'DELETE');
+  await loadData(); renderAdmin();
+};
+
+window.showLightbox = function(url, type) {
+  const lb = document.getElementById('lightbox');
+  lb.innerHTML = type === 'video' 
+    ? `<video src="${url}" controls autoplay playsinline></video>` 
+    : `<img src="${url}">`;
+  lb.classList.add('open');
+};
+
 function renderFront() {
   document.getElementById('f-year').textContent = new Date().getFullYear();
   const stTotal = expenses.reduce((s, e) => s + Number(e.amount || 0), 0);
@@ -424,102 +552,11 @@ function renderAdmin() {
   document.getElementById('a-expense-list').innerHTML = expenses.length ? expenses.map(e => buildExpenseItem(e, true)).join('') : '<div class="empty">暂无支出</div>';
 }
 
-function showLightbox(url, type) {
-  const lb = document.getElementById('lightbox');
-  lb.innerHTML = type === 'video' 
-    ? `<video src="${url}" controls autoplay playsinline></video>` 
-    : `<img src="${url}">`;
-  lb.classList.add('open');
-}
-
 async function loadData() {
   try {
     const [ev, ex] = await Promise.all([ api('/rest/v1/events?select=*&order=date.desc'), api('/rest/v1/expenses?select=*&order=date.desc') ]);
     events = ev || []; expenses = ex || [];
   } catch (e) { console.error(e); }
-}
-
-function openEventModal(id) {
-  editEvId = id;
-  window.pendingEvMedia = [];
-  const e = id ? events.find(x => x.id === id) : null;
-  document.getElementById('ev-date').value = e ? e.date : todayStr();
-  document.getElementById('ev-title').value = e ? e.title : '';
-  document.getElementById('ev-desc').value = e ? e.desc : '';
-  document.getElementById('ev-tags').value = e ? (e.tags || []).join(',') : '';
-  if(e && e.media) window.pendingEvMedia = [...e.media];
-  renderPreviews();
-  document.getElementById('modal-event').classList.add('open');
-}
-
-async function saveEvent() {
-  const title = document.getElementById('ev-title').value.trim();
-  if (!title) return alert('请输入标题');
-  const btn = document.getElementById('ev-save');
-  btn.textContent = '保存中...';
-  try {
-    const mediaToSave = [];
-    for(const m of window.pendingEvMedia) {
-      if(m.file) {
-        const url = await uploadFile(m.file);
-        mediaToSave.push({ url, type: m.type, name: m.name });
-      } else { mediaToSave.push(m); }
-    }
-    const rec = { date: document.getElementById('ev-date').value, type: document.getElementById('ev-type').value, title, desc: document.getElementById('ev-desc').value, tags: document.getElementById('ev-tags').value.split(',').map(s=>s.trim()).filter(Boolean), media: mediaToSave };
-    if(editEvId) rec.id = editEvId;
-    await api('/rest/v1/events', 'POST', rec);
-    document.getElementById('modal-event').classList.remove('open');
-    await loadData(); renderAdmin();
-  } catch (err) { alert('保存失败: ' + err.message); } finally { btn.textContent = '保存'; }
-}
-
-async function delEvent(id) {
-  if(!confirm('确定删除这条记录吗？')) return;
-  await api(`/rest/v1/events?id=eq.${id}`, 'DELETE');
-  await loadData(); renderAdmin();
-}
-
-function openExpenseModal(id) {
-  editExId = id;
-  window.pendingExMedia = [];
-  const e = id ? expenses.find(x => x.id === id) : null;
-  document.getElementById('ex-date').value = e ? e.date : todayStr();
-  document.getElementById('ex-amount').value = e ? e.amount : '';
-  document.getElementById('ex-title').value = e ? e.title : '';
-  document.getElementById('ex-cat').value = e ? e.category : '';
-  document.getElementById('ex-note').value = e ? e.note : '';
-  if(e && e.receipts) window.pendingExMedia = [...e.receipts];
-  renderPreviews();
-  document.getElementById('modal-expense').classList.add('open');
-}
-
-async function saveExpense() {
-  const title = document.getElementById('ex-title').value.trim();
-  const amount = Number(document.getElementById('ex-amount').value);
-  if (!title) return alert('请输入支出项目');
-  if (!(amount > 0)) return alert('金额不正确');
-  const btn = document.getElementById('ex-save');
-  btn.textContent = '保存中...';
-  try {
-    const receiptsToSave = [];
-    for(const m of window.pendingExMedia) {
-      if(m.file) {
-        const url = await uploadFile(m.file);
-        receiptsToSave.push({ url, type: m.type, name: m.name });
-      } else { receiptsToSave.push(m); }
-    }
-    const rec = { date: document.getElementById('ex-date').value, amount, title, category: document.getElementById('ex-cat').value || '未分类', note: document.getElementById('ex-note').value, receipts: receiptsToSave };
-    if(editExId) rec.id = editExId;
-    await api('/rest/v1/expenses', 'POST', rec);
-    document.getElementById('modal-expense').classList.remove('open');
-    await loadData(); renderAdmin();
-  } catch (err) { alert('保存失败: ' + err.message); } finally { btn.textContent = '保存'; }
-}
-
-async function delExpense(id) {
-  if(!confirm('确定删除这笔支出吗？')) return;
-  await api(`/rest/v1/expenses?id=eq.${id}`, 'DELETE');
-  await loadData(); renderAdmin();
 }
 
 (async function init() {
