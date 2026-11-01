@@ -86,7 +86,11 @@ body{
 .pv-item{aspect-ratio:1;border-radius:9px;overflow:hidden;background:#0e1017;position:relative;border:1px solid #242836}
 .pv-item img,.pv-item video{width:100%;height:100%;object-fit:cover;display:block}
 .pv-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.75);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10}
-.dropzone{border:1.5px dashed #2c3140;border-radius:12px;padding:20px;text-align:center;color:#6b7089;font-size:13px;cursor:pointer;display:block}
+.dropzone{border:1.5px dashed #2c3140;border-radius:12px;padding:20px;text-align:center;color:#6b7089;font-size:13px;cursor:pointer;display:block;position:relative; overflow:hidden;}
+/* 将 input 设为透明覆盖整个区域 */
+.dropzone input[type="file"] {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 100px;
+}
 .front-footer{text-align:center;padding:30px 20px 46px;color:#5a5f74;font-size:12.5px;border-top:1px solid #161a23}
 </style>
 </head>
@@ -158,10 +162,10 @@ body{
       <label class="field"><span>标签</span><input type="text" id="ev-tags" placeholder="舞台, 饭拍"></label>
       <div class="field">
         <span>图片 / 视频</span>
-        <label class="dropzone" for="ev-files">
+        <div class="dropzone">
           <div>点击这里选择照片/视频</div>
-        </label>
-        <input type="file" id="ev-files" accept="image/*,video/*" multiple style="display:none">
+          <input type="file" id="ev-files" accept="image/*,video/*" multiple>
+        </div>
         <div class="media-preview" id="ev-preview"></div>
       </div>
     </div>
@@ -182,10 +186,10 @@ body{
       <label class="field"><span>备注</span><textarea id="ex-note" rows="2"></textarea></label>
       <div class="field">
         <span>凭证截图（可选）</span>
-        <label class="dropzone" for="ex-files">
+        <div class="dropzone">
           <div>点击这里选择截图</div>
-        </label>
-        <input type="file" id="ex-files" accept="image/*" multiple style="display:none">
+          <input type="file" id="ex-files" accept="image/*" multiple>
+        </div>
         <div class="media-preview" id="ex-preview"></div>
       </div>
     </div>
@@ -196,11 +200,7 @@ body{
 <div class="lightbox" id="lightbox"></div>
 
 <script>
-// 全局报错拦截，防止按了没反应
-window.onerror = function(msg) {
-  alert("页面发生错误: " + msg);
-  return false;
-};
+window.onerror = function(msg) { alert("页面发生错误: " + msg); return false; };
 
 const URL = 'https://jhdmotgxxetvdjslgiek.supabase.co';
 const KEY = 'sb_publishable_9XIghyqF1T6N0SwR75Ml7w_UKnRXEPm';
@@ -329,7 +329,7 @@ document.getElementById('ev-files').onchange = function() {
     if(f.size > 50 * 1024 * 1024) { alert(`文件 "${f.name}" 超过50MB，请压缩`); continue; }
     window.pendingEvMedia.push({ file: f, type: f.type.startsWith('video') ? 'video' : 'image', name: f.name });
   }
-  this.value = ''; // 允许重复选
+  this.value = ''; 
   renderPreviews();
 };
 
